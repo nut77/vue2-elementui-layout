@@ -1,4 +1,4 @@
-# vue2-elementui-layout4
+# vue2-elementui-layout
 
 ## Project setup
 ```
