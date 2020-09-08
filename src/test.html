@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<div style="margin-top: 20px;">
+    <input type="file" id="file">
+    <button type="button" id="btn" onclick="showFile()">显示文件内容</button>
+</div>
+<div style="margin-top: 20px;">
+    <textarea name="" id="text" cols="200" rows="40"></textarea>
+</div>
+<iframe src="test.txt"></iframe>
+<a href="test.txt" target="_blank">test</a>
+<script>
+    function showFile () {
+        let file = document.getElementById('file').files[0];
+        let reader = new FileReader();
+        reader.readAsText(file);
+        reader.onloadend = function (e) {
+            document.getElementById('text').value = e.target.result;
+        }
+    }
+</script>
+</body>
+</html>
