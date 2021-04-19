@@ -1,6 +1,9 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-console.log(process.env.NODE_ENV);
+// import Empty from '@l/Empty';
+import NavTop from '@l/NavTop';
+import NavLeft from '@l/NavLeft';
+// import Nav from '@l/Nav';
 
 Vue.use(VueRouter);
 const router = new VueRouter({
@@ -8,28 +11,73 @@ const router = new VueRouter({
   // base: '/pro/',
   routes: [
     {
-      path: '/mkt',
-      component: () => import('@/views/base.vue'),
+      path: '/',
+      redirect: '/login'
+    },
+    {
+      path: '/order',
       children: [
         {
-          path: 'kpi',
-          component: () => import('@/views/login/index.vue')
+          path: 'list',
+          components: {
+            default: () => import('@p/orderManage/List.vue'),
+            left: NavLeft,
+            top: NavTop
+          }
+        },
+        {
+          path: 'detail/:id',
+          component: () => import('@p/orderManage/OrderDetail.vue')
+        },
+        {
+          path: 'overview',
+          component: () => import('@p/orderManage/Overview.vue')
         }
       ]
     },
     {
       path: '/login',
-      component: () => import('@/views/login/index.vue')
+      component: () => import('@p/login/Index.vue')
     },
     {
-      path: '/index',
-      component: () => import('@/views/home/index.vue')
+      path: '/home',
+      components: () => () => import('@p/home/Index.vue'),
+      meta: {
+        nav: 'NavTop'
+      }
     },
     {
       path: '/loading',
-      component: () => import('@/views/loading/index.vue')
+      component: () => import('@p/loading/Index.vue')
+    },
+    {
+      path: '/error',
+      component: () => import('@p/error/Index.vue')
     }
   ]
+});
+
+router.beforeEach((to, from, next) => {
+  // 验证是否登录
+  const token = localStorage.getItem('token');
+  if (to.path !== '/login' && (token === 'null' || !token)) {
+    // next('login');
+    next();
+    return false;
+  }
+
+  // 如果token存在 访问登录页面 则跳转首页
+  if (to.path === '/login' && (token !== 'null' && token)) {
+    next('/home');
+    return false;
+  }
+
+  if (to.matched.length === 0) {
+    next('error');
+    return false;
+  }
+
+  next();
 });
 
 export default router;
