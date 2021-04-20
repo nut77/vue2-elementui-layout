@@ -22,13 +22,19 @@ export default {
       hasWrapperLeft: true
     };
   },
+  methods: {
+    refreshWrapper() {
+      this.hasWrapperTop = this.$route.meta.hasWrapperTop;
+      this.hasWrapperLeft = this.$route.meta.hasWrapperLeft;
+    }
+  },
   watch: {
-    $route: path => {
-      // this.wrapperComp = this.$route.meta.nav || 'NavEmpty';
+    $route(to, from) {
+      this.refreshWrapper();
     }
   },
   created() {
-    // this.wrapperComp = this.$route.meta.nav || 'NavEmpty';
+    this.refreshWrapper();
   }
 };
 </script>

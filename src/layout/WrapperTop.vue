@@ -9,7 +9,15 @@
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <el-menu-item v-for="item of navList" :index="item.path" :key="item.name">{{item.name}}</el-menu-item>
+      <el-menu-item
+        v-for="item of navList"
+        :index="item.redirect ? item.redirect : item.path"
+        :key="item.name">
+        <template slot="title">
+          <i class="el-icon-location"></i>
+          <span>{{item.name}}</span>
+        </template>
+      </el-menu-item>
     </el-menu>
     <div class="el-header-user">
       username
@@ -22,20 +30,21 @@ export default {
   name: 'WrapperTop',
   data() {
     return {
-      activePath: '/home',
-      navList: [
-        {name: '首页', path: '/home'},
-        {name: '订单管理', path: '/order'},
-        {name: '物流管理', path: '/logistics'},
-        {name: '商品管理', path: '/commodity'},
-        {name: '系统管理', path: '/system'}
-      ]
+      activePath: '/home'
     };
+  },
+  computed: {
+    navList() {
+      return this.$router.options.routes.filter(item => item.meta.index === 1 && item.meta.isNav);
+    }
   },
   methods: {
     handleSelect(path) {
       this.activePath = path;
     }
+  },
+  created() {
+    this.activePath = this.$route.path;
   }
 };
 </script>

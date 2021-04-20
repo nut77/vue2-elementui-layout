@@ -1,3 +1,6 @@
+// 路由配置
+import MENU_LIST from './config';
+
 /**
  * 界面导航配置
  * name 导航中文名
@@ -10,16 +13,12 @@
  * meta-iconClass 表示该导航模块应用的css-class,
  * meta-isNav 是否是导航
  */
-const COMPONENT_EMPTY_PATH = '@l/WrapperEmpty.vue';
-function getMenuConfig(index, name, path, componentPath = COMPONENT_EMPTY_PATH, config = {}, children = []) {
-  componentPath = '/pages/home/Index.vue';
-  const component = resolve => require([`@${componentPath}`], resolve);
+const COMPONENT_EMPTY_PATH = 'WrapperEmpty.vue';
+function getMenuItemConfig(index, name, path, componentPath, config = {}, children = []) {
   const menuItemConfig = {
     name,
     path,
-    component,
-    // component: () => Promise.resolve(require(`${componentPath}`).default),  component: resolve => require([`${componentPath}`], resolve),
-    children: [],
+    component: loadComponent(componentPath || COMPONENT_EMPTY_PATH),
     meta: Object.assign({
       index,
       hasWrapperTop: false,
@@ -29,22 +28,27 @@ function getMenuConfig(index, name, path, componentPath = COMPONENT_EMPTY_PATH, 
     }, config)
   };
   if (config.redirect) menuItemConfig.redirect = config.redirect;
+  if (children.length) menuItemConfig.children = [];
   for (const item of children) {
-    menuItemConfig.children.push(getMenuConfig(...item));
+    menuItemConfig.children.push(getMenuItemConfig(...item));
   }
   return menuItemConfig;
 }
 
-const routes = [
-  getMenuConfig(1, '登录', '/login', '@p/login/Index.vue', {isNav: false}),
-  getMenuConfig(1, '加载页', '/loading', '@p/loading/Index.vue', {isNav: false}),
-  getMenuConfig(1, '错误页面', '/error', '@p/error/Index.vue', {isNav: false}),
-  getMenuConfig(1, '404', '/error', '@p/error/Index.vue', {isNav: false}),
-  getMenuConfig(1, '订单管理', '/order', '@p/error/Index.vue', {redirect: '/order/list'}, [
-    [2, '订单列表', 'list', '@p/order/list/Index.vue', {hasWrapperTop: true, hasWrapperLeft: true}],
-    [2, '订单详情', 'detail/:id', '@p/order/OrderDetail.vue', {hasWrapperTop: true}],
-    [2, '订单概览', 'overview', '@p/order/OrderDetail.vue', {hasWrapperTop: true, hasWrapperLeft: true}]
-  ])
-];
+function getRoutes() {
+  const routes = [];
+  for (const item of MENU_LIST) {
+    routes.push(getMenuItemConfig(...item));
+  }
+  return routes;
+}
 
-export default routes;
+// 处理异步加载页面组件，传递组件文件路径（必须是相对路径）。组件路径如果是字面量直接引用就行，参数的话就需要用这个方法。
+function loadComponent(componentPath) {
+  if (componentPath === COMPONENT_EMPTY_PATH) {
+    return () => Promise.resolve(require(`@l/${componentPath}`).default);
+  }
+  return () => Promise.resolve(require(`@p/${componentPath}`).default);
+}
+
+export default getRoutes();
