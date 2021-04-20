@@ -1,2 +1,43 @@
-@fontColor: red;
-@fontColorHighlight: #42b983;
+// 系统的一些能公用的变量和模块
+@colorHighlight: #2acaca;
+@colorDefaultFont: #4e6471;
+@colorPlaceholder: #c4d1d7;
+@colorDanger: #f65a4b;
+
+@textColorLighter: #b5c2ca;
+@textColorLight: #4e6471;
+@textColorWeight: #1d2b36;
+
+@borderColorInputDefault: #b5c2ca;
+@borderColorInputHightlight: #8e9ea8;
+@borderColorDropdown: #e9e9e9;
+@borderColorTable: #eff2f5;
+
+@bgColorInputHightlight: #f4f6f7;
+@bgColorListItemHover: #e8ecef;
+
+@threatColor4: #ca1706;
+@threatColor3: #f65a4b;
+@threatColor2: #f69e6e;
+@threatColor1: #f8c046;
+@threatColor0: #26d5ae;
+
+.mixinWidth(@width) {
+  width: ~'@{width}px' !important;
+}
+
+.mixinHeight(@height) {
+  height: ~'@{height}px';
+}
+
+.mixinFontSize(@size) {
+  font-size: ~'@{size}px';
+}
+
+.ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -o-text-overflow: ellipsis;
+  word-wrap: break-word;
+}

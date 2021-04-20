@@ -1,0 +1,48 @@
+.el-button {
+  [class^="el-icon-"] {
+    color: white;
+  }
+}
+
+[class^="el-icon-"] {
+  cursor: pointer;
+  color: @colorDefaultFont;
+}
+
+.el-icon-square-close-outline {
+  padding: 3px 3px 3px 3px;
+  background-color: #b5c2ca;
+  color: white !important;
+  font-size: 23px;
+  font-weight: bolder;
+  border-radius: 3px;
+
+  &::before {
+    content: "\E60F";
+  }
+
+  &:hover {
+    background-color: @colorHighlight !important;
+  }
+}
+
+[class*="el-icon-search--"] {
+  &:hover {
+    color: @colorHighlight !important;
+  }
+}
+
+.el-icon-search--medium {
+  font-size: 21px;
+  font-weight: 600;
+  line-height: 36px;
+  &:hover {
+    color: @colorHighlight !important;
+  }
+}
+
+.el-icon-search--small,
+.el-icon-close--small {
+  font-size: 17px;
+  line-height: 28px;
+}

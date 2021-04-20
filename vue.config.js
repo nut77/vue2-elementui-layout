@@ -54,9 +54,9 @@ module.exports = {
     });
   },
   // css相关配置
-  css: {
+  /*css: {
     extract: true, // 是否使用css分离插件 ExtractTextPlugin
     requireModuleExtension: false // 启用 CSS modules for all styles / pre-processor files.
-  },
+  },*/
   productionSourceMap: false
 };

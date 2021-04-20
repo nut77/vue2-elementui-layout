@@ -8,9 +8,9 @@
 </template>
 
 <script>
-import ListHeader from './components/ListHeader';
-import ListBody from './components/ListBody';
-import ListFooter from './components/ListFooter';
+import ListHeader from './ListHeader';
+import ListBody from './ListBody';
+import ListFooter from './ListFooter';
 export default {
   name: 'Index',
   components: {ListHeader, ListBody, ListFooter}

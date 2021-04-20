@@ -1,16 +1,16 @@
 <template>
-  <div class="box">
+  <div>
     首页
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home'
+  name: 'Index'
 };
 </script>
 
-<style>
+<style scoped>
   .box {
     color: green;
   }

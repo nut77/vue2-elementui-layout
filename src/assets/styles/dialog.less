@@ -1,0 +1,175 @@
+@colorDialogHeader: #a2b3bb;
+// 模态框
+.el-dialog {
+  border-radius: 8px;
+}
+.el-dialog__header {
+  padding: 0 20px;
+  height: 50px;
+  line-height: 50px;
+  text-align: left;
+  color: @colorDialogHeader;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  background: #0f1922;
+}
+.el-dialog__title {
+  color: @colorDialogHeader;
+  font-weight: bold;
+}
+.el-icon-close {
+  margin-top: -5px;
+  color: @colorDialogHeader;
+  font-weight: bold;
+  font-size: 22px;
+}
+.el-dialog__headerbtn:hover .el-icon-close {
+  color: #95a6af;
+}
+.el-dialog__body {
+  padding: 20px 35px;
+}
+.el-form-item.is-error .el-input__inner,
+.el-form-item.is-error .el-input__inner:focus,
+.el-form-item.is-error .el-textarea__inner,
+.el-form-item.is-error .el-textarea__inner:focus,
+.el-message-box__input input.invalid,
+.el-message-box__input input.invalid:focus,
+.el-form-item.is-success .el-input__inner,
+.el-form-item.is-success .el-input__inner:focus,
+.el-form-item.is-success .el-textarea__inner,
+.el-form-item.is-success .el-textarea__inner:focus {
+  border-color: #b5c2ca;
+}
+
+// 模态框-表单
+.el-dialog {
+  .el-form-item__label {
+    position: relative;
+    padding-right: 20px;
+    color: @colorDefaultFont;
+    font-size: 15px;
+    text-align: justify;
+    text-align-last: justify;
+    &::after {
+      position: absolute;
+      z-index: 2;
+      left: calc(~"100% - 18px");
+      width: 2px;
+      height: 2px;
+      content: "：";
+    }
+  }
+  .el-form-item {
+    margin-bottom: 10px;
+  }
+  .el-form-item.is-required:not(.is-no-asterisk) > .el-form-item__label:before {
+    position: absolute;
+    left: -13px;
+    top: 3px;
+    color: @colorDanger;
+    font-size: 20px;
+    font-weight: bold;
+    content: "*";
+  }
+  .el-input__inner {
+    height: 32px;
+    line-height: 32px;
+  }
+  .el-form-item__error {
+    padding-top: 1px;
+    color: @colorDanger;
+    font-size: 11px;
+    padding-left: 23px;
+    &::before {
+      position: absolute;
+      top: 0;
+      left: 5px;
+      content: '';
+      display: block;
+      width: 13px;
+      height: 14px;
+      //background: url(../img/top/error.png) no-repeat center;
+      background-size: 100% 100%;
+    }
+  }
+  .textarea-tip {
+    position: absolute;
+    bottom: -8px;
+    right: 4px;
+    font-size: 12px;
+    color: #7ac9b2;
+  }
+}
+.el-dialog-file {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  z-index: 99;
+}
+.el-dialog--mergeLabel {
+  .el-dialog__body {
+    padding-right: 100px;
+  }
+  .el-dropdown {
+    position: absolute;
+    right: 25px;
+    top: 73px;
+  }
+  .el-dropdown-btn {
+    height: 30px;
+    padding: 5px 15px;
+  }
+  .el-icon-plus {
+    font-weight: bold;
+  }
+  .el-input--label {
+    width: 110px;
+    margin: 0 8px 0 0;
+  }
+  .el-input--newLabel {
+    width: 345px;
+  }
+  .el-input__suffix {
+    right: 3px;
+    margin-top: 2px;
+  }
+  .el-icon-square-close-outline {
+    padding: 2px;
+  }
+}
+.el-dialog--mailboxReg {
+  .el-date-editor {
+    width: 172.5px;
+    .el-input__inner {
+      font-size: 14px;
+    }
+  }
+  .el-radio {
+    width: 68px;
+  }
+  .el-dialog__body {
+    padding-top: 0;
+  }
+}
+.el-dialog--info {
+  .el-dialog__body {
+    max-height: 400px;
+    padding: 10px 20px;
+    overflow: auto;
+  }
+  .el-dialog-infoTitle {
+    color: @colorDanger;
+    font-size: 15px;
+    line-height: 25px;
+  }
+  .el-dialog-infoList {
+    li {
+      word-break: break-all;
+    }
+  }
+}

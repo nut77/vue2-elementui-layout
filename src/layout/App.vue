@@ -1,30 +1,11 @@
 <template>
-  <div id="app">
-    <keep-alive>
-      <component :is="wrapperComp"></component>
-    </keep-alive>
-  </div>
+  <wrapper></wrapper>
 </template>
 
 <script>
-import NavEmpty from './NavEmpty';
-import Nav from './Nav';
-import NavTop from './NavTop';
+import Wrapper from './Wrapper';
 export default {
   name: 'App',
-  components: {NavEmpty, Nav, NavTop},
-  data() {
-    return {
-      wrapperComp: 'NavEmpty'
-    };
-  },
-  watch: {
-    '$route.path': path => {
-      this.wrapperComp = this.$route.meta.nav || 'NavEmpty';
-    }
-  },
-  created() {
-    this.wrapperComp = this.$route.meta.nav || 'NavEmpty';
-  }
+  components: {Wrapper}
 };
 </script>
