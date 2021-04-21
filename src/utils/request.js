@@ -104,14 +104,24 @@ const request = async (options) => {
   return res;
 };
 
-let get = (url, params = {}, config = {}) => {
-  return request({
-    method: 'get',
-    params
-  });
+// 封装axios请求
+let ajax = (method = 'get', url, params = {}, config = {}) => {
+  let options = Object.assign({}, config);
+  options[/get|delete/.test(method) ? 'params' : 'data'] = params;
+  options.method = method;
+  options.url = url;
+  return request(options);
 };
+let get = (url, params = {}, config = {}) => ajax('get', url, params, config);
+let post = (url, params = {}, config = {}) => ajax('post', url, params, config);
+let del = (url, params = {}, config = {}) => ajax('delete', url, params, config);
+let put = (url, params = {}, config = {}) => ajax('put', url, params, config);
 
 export default {
   request,
-  get
+  ajax,
+  get,
+  post,
+  del,
+  put
 };
