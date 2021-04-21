@@ -1,5 +1,5 @@
 <template>
-  <div>Overview</div>
+  <div>商品管理-Overview</div>
 </template>
 
 <script>

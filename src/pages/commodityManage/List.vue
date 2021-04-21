@@ -1,5 +1,5 @@
 <template>
-  <div>List</div>
+  <div>商品管理-List</div>
 </template>
 
 <script>

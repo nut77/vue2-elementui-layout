@@ -1,5 +1,5 @@
 <template>
-  <div>List</div>
+  <div>ChannelSetting</div>
 </template>
 
 <script>

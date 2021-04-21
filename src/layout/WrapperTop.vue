@@ -1,17 +1,16 @@
 <template>
   <el-header>
-    <h3 class="el-header-title">system name</h3>
+    <h3 class="el-header-title" @click="toggleCollapse">system name</h3>
     <el-menu
       :router="true"
       :default-active="activePath"
       mode="horizontal"
-      @select="handleSelect"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
       <el-menu-item
         v-for="item of navList"
-        :index="item.redirect ? item.redirect : item.path"
+        :index="item.path"
         :key="item.name">
         <template slot="title">
           <i class="el-icon-location"></i>
@@ -28,23 +27,22 @@
 <script>
 export default {
   name: 'WrapperTop',
+  props: ['navList', 'path'],
   data() {
     return {
-      activePath: '/home'
+      test: '',
+      activePath: this.path[0]
     };
   },
-  computed: {
-    navList() {
-      return this.$router.options.routes.filter(item => item.meta.index === 1 && item.meta.isNav);
-    }
-  },
   methods: {
-    handleSelect(path) {
-      this.activePath = path;
+    toggleCollapse() {
+      this.$emit('toggleCollapse');
     }
   },
-  created() {
-    this.activePath = this.$route.path;
+  watch: {
+    path() {
+      this.activePath = this.path[0];
+    }
   }
 };
 </script>

@@ -22,8 +22,8 @@ function getMenuItemConfig(index, name, path, componentPath, config = {}, childr
     component: loadComponent(componentPath || COMPONENT_EMPTY_PATH),
     meta: Object.assign({
       index,
-      hasWrapperTop: false,
-      hasWrapperLeft: false,
+      hasWrapperTop: true,
+      hasWrapperLeft: true,
       isNav: true,
       iconClass: ''
     }, config)
