@@ -22,6 +22,7 @@
 import WrapperLeft from './WrapperLeft';
 import WrapperTop from './WrapperTop';
 import WrapperContent from './WrapperContent';
+import systemManage from '../api/systemManage';
 export default {
   name: 'Wrapper',
   components: {WrapperLeft, WrapperTop, WrapperContent},
@@ -68,12 +69,13 @@ export default {
     $route(toRoute) {
       this.initLayout(toRoute);
       console.log(this.$tool.dateFormat());
-      this.$ajax.get('test');
     }
   },
   created() {
     this.routes = this.$router.options.routes;
     this.initLayout();
+    this.$ajax.post('test');
+    this.$api.systemManage.delUser();
   }
 };
 </script>
