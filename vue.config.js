@@ -7,7 +7,7 @@ module.exports = {
   lintOnSave: !isProdEnv,
   pages: {
     index: {
-      entry: 'src/main.js',
+      entry: 'src/main/index.js',
       title: 'system name',
       // 在这个页面中包含的块，默认情况下会包含提取出来的通用 chunk 和 vendor chunk。
       chunks: ['chunk-vendors', 'chunk-common', 'index']
@@ -46,6 +46,7 @@ module.exports = {
         extensions: ['.js', '.json', '.vue'],
         alias: {
           '@': path.resolve(__dirname, './src'),
+          '@a': path.resolve(__dirname, './src/assets'),
           '@p': path.resolve(__dirname, './src/pages'),
           '@c': path.resolve(__dirname, './src/pages/components'),
           '@l': path.resolve(__dirname, './src/layout')

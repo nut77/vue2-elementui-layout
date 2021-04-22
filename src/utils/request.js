@@ -104,7 +104,14 @@ const request = async (options) => {
   return res;
 };
 
-// 封装axios请求
+/**
+ * 封装request方法
+ * @param {string} method - 请求方法
+ * @param {string} url - 请求地址
+ * @param {Object} [params] - 请求参数
+ * @param {Object} [config] - 请求的额外配置项，如：contentType, onUploadProgress等
+ * @return {Promise} 返回请求结果
+ */
 const ajax = (method = 'get', url, params = {}, config = {}) => {
   const options = Object.assign({}, config);
   options[/get|delete/.test(method) ? 'params' : 'data'] = params;
@@ -117,7 +124,7 @@ const post = (url, params = {}, config = {}) => ajax('post', url, params, config
 const del = (url, params = {}, config = {}) => ajax('delete', url, params, config);
 const put = (url, params = {}, config = {}) => ajax('put', url, params, config);
 
-export default {
+export {
   request,
   ajax,
   get,
@@ -125,3 +132,4 @@ export default {
   del,
   put
 };
+export default ajax;
