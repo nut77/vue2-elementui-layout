@@ -125,11 +125,10 @@ const del = (url, params = {}, config = {}) => ajax('delete', url, params, confi
 const put = (url, params = {}, config = {}) => ajax('put', url, params, config);
 
 export {
+  ajax as all,
   request,
-  ajax,
   get,
   post,
   del,
   put
 };
-export default ajax;

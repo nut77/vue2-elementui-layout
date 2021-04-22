@@ -64,13 +64,13 @@ const formatFileSize = (fileSize) => {
 /**
  * 按指定格式-格式化时间
  * @param {string} fmt - 时间格式化方式
- * @param {boolean} [hasweek=false] - 是否显示星期
+ * @param {boolean} [hasWeek=false] - 是否显示星期
  * @return {string} 格式化后的时间
  * @example
  * new Date().format("yyyy-MM-dd hh:mm:ss")
  */
 // eslint-disable-next-line no-extend-native
-Date.prototype.format = (fmt, hasweek = false) => {
+Date.prototype.format = (fmt, hasWeek = false) => {
   const weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   const o = {
     'M+': this.getMonth() + 1,
@@ -88,7 +88,7 @@ Date.prototype.format = (fmt, hasweek = false) => {
     if (new RegExp('(' + k + ')').test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
   }
 
-  return fmt + (hasweek ? '&nbsp;&nbsp;&nbsp;&nbsp;' + weekday[this.getDay()] : '');
+  return fmt + (hasWeek ? '&nbsp;&nbsp;&nbsp;&nbsp;' + weekday[this.getDay()] : '');
 };
 
 /**
@@ -301,6 +301,18 @@ const isUrl = (str) => {
  * @return {boolean}
  */
 const isUri = (str) => {
+  return /^\/[\s\S]+/.test(str.replace(/(^\s*)|(\s*$)/g, ''));
+};
+
+/**
+ * 判断输入的文件名是否是指定类型
+ * @param {string} str - 待判断的字符串
+ * @param {string} mimeType - 文件大类，格式参见MIME
+ * @param {string|string[]} specifiedType - 特定类型，填入文件后缀名
+ * @return {boolean}
+ */
+const isSpecifiedFile = (str, mimeType, specifiedType = []) => {
+  // todo
   return /^\/[\s\S]+/.test(str.replace(/(^\s*)|(\s*$)/g, ''));
 };
 
@@ -712,6 +724,7 @@ export default {
   isEmail,
   isUrl,
   isUri,
+  isSpecifiedFile,
   getNationalFlagSrc,
   localstorageSet,
   localstorageGet,

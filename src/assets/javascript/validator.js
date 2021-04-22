@@ -1,19 +1,17 @@
 // element ui 自定义表单验证规则
-import tool from '../../utils/tool';
+import tool from '@/utils/tool';
+import * as ajax from '@/utils/request';
 
 const Validator = {};
 
-function codeAddValidator(value, callback, type, tip) {
+async function codeAddValidator(value, callback, type, tip) {
   if (!value) {
     callback(new Error(tip + '不能为空'));
   } else if (!tool[`is${tool.upperFirstLetter(type)}`](value)) {
     callback(new Error(tip + '格式有误'));
   } else {
-    tool.getJson(tool.CONFIG.api.codeExist, (res) => {
-      res.data ? callback(new Error(tip + '已存在')) : callback();
-    }, null, {
-      code: value
-    }, 'get');
+    const res = ajax.get('test');
+    res.data ? callback(new Error(tip + '已存在')) : callback();
   }
 }
 
@@ -21,17 +19,6 @@ function codeAddValidator(value, callback, type, tip) {
 Validator.required = (rule, value, callback) => {
   if (!value) {
     callback(new Error('不能为空'));
-  } else {
-    callback();
-  }
-};
-
-// 验证组织名
-Validator.groupName = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('组织不能为空'));
-  } else if (/^[~@#%\+\-=\/\(_\)\*\&\<\>\[\"\;\'\|\$\^\?\!.\{\}\`]$/.test(value)) {
-    callback(new Error('组织名非法'));
   } else {
     callback();
   }
@@ -100,9 +87,9 @@ Validator.phoneUnique = (rule, value, callback) => {
 // 验证压缩包文件格式是否正确
 Validator.file = (rule, value, callback) => {
   let file;
-  let dialogElements = document.querySelectorAll('.el-dialog__wrapper');
+  const dialogElements = document.querySelectorAll('.el-dialog__wrapper');
 
-  for (let ele of dialogElements) {
+  for (const ele of dialogElements) {
     if (ele.style.display !== 'none') {
       file = ele.querySelector('.el-dialog-file');
       break;
@@ -113,50 +100,19 @@ Validator.file = (rule, value, callback) => {
   } else if (!/\.(zip)$/.test(value)) {
     callback(new Error('文件格式有误'));
   } else if (file && file.files[0].size > 500 * 1024 * 1024) {
-    callback(new Error(tool.getTipText('error', '-1051')));
-  } else {
-    callback();
-  }
-};
-
-// 验证是否是单个黑样本
-Validator.singleBlackSample = (rule, value, callback) => {
-  let file;
-  let dialogElements = document.querySelectorAll('.el-dialog__wrapper');
-
-  for (let ele of dialogElements) {
-    if (ele.style.display !== 'none') {
-      file = ele.querySelector('.el-dialog-file');
-      break;
-    }
-  }
-  if (!value) {
-    callback(new Error('请上传文件'));
-  } else if (/\.(tar|zip|rar|7z|gz|wim|xz|cab|bz2)$/.test(value)) {
-    callback(new Error('不支持上传压缩包，请上传单个文件'));
-  } else if (file && file.files[0].size > 500 * 1024 * 1024) {
-    callback(new Error(tool.getTipText('error', '-1051')));
+    callback(new Error('请上传500M以内的文件'));
   } else {
     callback();
   }
 };
 
 // 验证邮箱账号
-Validator.email = (rule, value, callback) => {
-  if (!value) {
-    callback(new Error('邮箱不能为空'));
-  } else if (!tool.isEmail(value)) {
-    callback(new Error('邮箱格式有误'));
-  } else {
-    callback();
-  }
-};
 Validator.emailUnique = (rule, value, callback) => {
   codeAddValidator(value, callback, 'email', '邮箱');
 };
 Validator.isEmail = (rule, value, callback) => {
   if (!value) {
-    callback();
+    callback(new Error('邮箱不能为空'));
   } else if (!tool.isEmail(value)) {
     callback(new Error('邮箱格式有误'));
   } else {
@@ -168,8 +124,8 @@ Validator.isEmailArr = (rule, value, callback) => {
     callback();
     return false;
   }
-  let arr = value.split(',');
-  for (let item of arr) {
+  const arr = value.split(',');
+  for (const item of arr) {
     if (!tool.isEmail(item)) {
       callback(new Error('邮箱格式有误'));
       return false;

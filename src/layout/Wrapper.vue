@@ -67,6 +67,8 @@ export default {
   watch: {
     $route(toRoute) {
       this.initLayout(toRoute);
+      console.log(this.$tool.dateFormat());
+      this.$ajax.get('test');
     }
   },
   created() {
