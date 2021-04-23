@@ -29,7 +29,7 @@ const transformStatus = (value, status) => {
 };
 
 // 数组转字符串
-const transformArrayToString = (val, sep = ',', emptyVal = '') => Tool.arrayToString(val, sep, emptyVal = '')
+const transformArrayToString = (val, sep = ',', emptyVal = '') => Tool.arrayToString(val, sep, emptyVal);
 
 // 字符串转数组
 const transformStringToArray = (value, split = '') => (value || '').split(split);
