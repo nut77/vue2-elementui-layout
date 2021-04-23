@@ -45,16 +45,17 @@ const objectDeepClone = (obj) => {
 };
 
 /**
- * formatFileSize. 文件大小格式化
- * @param {(null|string|number)} fileSize - 文件大小,单位字节
+ * formatByteSize. 字节大小格式化
+ * @param {(null|string|number)} byteSize - 字节大小
+ * @return {string} 格式化后的值
  */
-const formatFileSize = (fileSize) => {
-  if (fileSize == null || fileSize === '' || !fileSize) {
+const formatByteSize = (byteSize) => {
+  if (byteSize == null || byteSize === '' || !byteSize) {
     return '0B';
   }
   const unitArr = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   let index = 0;
-  const srcSize = parseFloat(fileSize);
+  const srcSize = parseFloat(byteSize);
   index = Math.floor(Math.log(srcSize) / Math.log(1024));
   let size = srcSize / Math.pow(1024, index);
   size = size.toFixed(2);
@@ -98,7 +99,7 @@ Date.prototype.format = (fmt, hasWeek = false) => {
  * @param {number} [granularity=1] 分粒度 默认为1，若为10可能显示为 10:10 10:20等
  * @return {string} 格式化后的时间
  */
-const dateFormat = (val, type = 'YYYY-MM-DD hh:mm:ss', granularity = 1) => {
+const formatDate = (val, type = 'YYYY-MM-DD hh:mm:ss', granularity = 1) => {
   const date = val instanceof Date ? val : new Date(/^[0-9]*$/g.test(val) ? val * 1 : Date.now());
   const YYYY = date.getFullYear() + '';
   const m = date.getMonth() + 1;
@@ -691,11 +692,11 @@ const numberWithCommas = (x) => {
 /**
  * 取小数
  * @param {number|string} val 目标数据
- * @param {number} fixedLen - 保留小数长度
- * @param {boolean} [isCeil=false] - 是否四舍五入
+ * @param {number} [fixedLen=2] - 保留小数长度，默认保留2位
+ * @param {boolean} [isCeil=true] - 是否四舍五入
  * @return {string}
  */
-const numberFixed = (val, fixedLen, isCeil = false) => {
+const numberFixed = (val, fixedLen = 2, isCeil = true) => {
   if (isCeil) return parseFloat(val).toFixed(fixedLen);
   let str = val + '';
   const index = str.lastIndexOf('.') + 1;
@@ -713,8 +714,8 @@ export default {
   showMessage,
   hideMessage,
   objectDeepClone,
-  formatFileSize,
-  dateFormat,
+  formatByteSize,
+  formatDate,
   isDomain,
   isValidPassword,
   isPhone,

@@ -22,7 +22,6 @@
 import WrapperLeft from './WrapperLeft';
 import WrapperTop from './WrapperTop';
 import WrapperContent from './WrapperContent';
-import systemManage from '../api/systemManage';
 export default {
   name: 'Wrapper',
   components: {WrapperLeft, WrapperTop, WrapperContent},
@@ -68,7 +67,7 @@ export default {
   watch: {
     $route(toRoute) {
       this.initLayout(toRoute);
-      console.log(this.$tool.dateFormat());
+      console.log(this.$tool.formatDate());
     }
   },
   created() {
