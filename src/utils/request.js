@@ -5,7 +5,7 @@ import qs from 'qs';
 
 // 创建一个 axios 实例
 const axiosInstance = axios.create({
-  baseURL: '/api',
+  baseURL: process.env.VUE_APP_AXIOS_BASE_URL,
   timeout: 1000 * 60
 });
 
@@ -49,10 +49,8 @@ axiosInstance.interceptors.response.use(response => {
  * @return {Object} 返回请求配置参数
  */
 const buildRequestConfig = (options) => {
-  const config = {};
-  config.method = (options.method || 'get').toLowerCase();
-
-  if (options.onUploadProgress) config.onUploadProgress = options.onUploadProgress;
+  const config = Object.assign({}, options);
+  delete config.contentType;
   if (options.contentType) config.headers['Content-Type'] = options.contentType;
   // 处理文件上传参数转换
   if (options.contentType === 'multipart/form-data' || options.onUploadProgress) {
@@ -109,7 +107,7 @@ const request = async (options) => {
  * @param {string} method - 请求方法
  * @param {string} url - 请求地址
  * @param {Object} [params] - 请求参数
- * @param {Object} [config] - 请求的额外配置项，如：contentType, onUploadProgress等
+ * @param {Object} [config] - 请求的额外配置项，如：contentType, headers, onUploadProgress等
  * @return {Promise} 返回请求结果
  */
 const ajax = (method = 'get', url, params = {}, config = {}) => {
