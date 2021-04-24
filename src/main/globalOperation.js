@@ -3,31 +3,32 @@ import Filters from '@/filters';
 import Directives from '@/directives';
 import Components from './components';
 import Prototypes from './prototypes';
+import Mixins from '@/mixins';
 
 export default {
   install(Vue) {
-    this.registerFilter(Vue);
-    this.registerDirective(Vue);
-    this.registerPrototype(Vue);
+    this.registerFilters(Vue);
+    this.registerDirectives(Vue);
+    this.registerPrototypes(Vue);
     this.registerComponents(Vue);
+    // this.registerMixins(Vue);
   },
   // 注册过滤器
-  registerFilter(Vue) {
+  registerFilters(Vue) {
     for (const name in Filters) {
       Vue.filter(name, Filters[name]);
     }
   },
   // 注册指令
-  registerDirective(Vue) {
+  registerDirectives(Vue) {
     for (const name in Directives) {
       Vue.directive(name.toLowerCase(), Directives[name]);
     }
   },
   // 将方法挂载在原型上
-  registerPrototype(Vue) {
-    const prototypes = Prototypes;
-    for (const name in prototypes) {
-      Vue.prototype['$' + name] = prototypes[name];
+  registerPrototypes(Vue) {
+    for (const name in Prototypes) {
+      Vue.prototype['$' + name] = Prototypes[name];
     }
   },
   // 注册全局组件
@@ -40,6 +41,12 @@ export default {
         return res;
       });
       Vue.component(key, Components[name]);
+    }
+  },
+  // 注册全局混入,所有组件（包括第三方组件）都将被影响,最好不要用
+  registerMixins(Vue) {
+    for (const name in Mixins) {
+      Vue.mixin(Mixins[name]);
     }
   }
 };

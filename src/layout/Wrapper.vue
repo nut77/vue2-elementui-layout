@@ -22,9 +22,11 @@
 import WrapperLeft from './WrapperLeft';
 import WrapperTop from './WrapperTop';
 import WrapperContent from './WrapperContent';
+import mixins from '@/mixins';
 export default {
   name: 'Wrapper',
   components: {WrapperLeft, WrapperTop, WrapperContent},
+  mixins: [mixins.hook],
   data() {
     return {
       hasWrapperTop: true,
@@ -75,6 +77,13 @@ export default {
     this.initLayout();
     this.$ajax.post('test');
     this.$api.systemManage.delUser();
+    console.log('wrapper-created');
+  },
+  mounted() {
+    console.log('wrapper-mounted');
+  },
+  updated() {
+    console.log('wrapper-updated');
   }
 };
 </script>
