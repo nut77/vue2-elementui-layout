@@ -6,7 +6,6 @@ import ElementUI from 'element-ui';
 import GlobalOperation from './globalOperation';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@a/styles/common.less';
-import '@/mock';
 
 Vue.config.productionTip = false;
 Vue.use(ElementUI, {size: 'medium'});

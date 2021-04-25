@@ -53,7 +53,7 @@ const buildRequestConfig = (options) => {
   delete config.contentType;
   if (options.contentType) config.headers['Content-Type'] = options.contentType;
   // 处理文件上传参数转换
-  if (options.contentType === 'multipart/form-data' || options.onUploadProgress) {
+  if ((config.headers && config.headers['Content-Type'] === 'multipart/form-data') || config.onUploadProgress) {
     const formData = new FormData();
     for (const key in options.data) {
       const files = options.data[key];

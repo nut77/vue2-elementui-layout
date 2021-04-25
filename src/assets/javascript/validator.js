@@ -4,7 +4,7 @@ import * as ajax from '@/utils/request';
 
 const Validator = {};
 
-async function codeAddValidator(value, callback, type, tip) {
+function codeAddValidator(value, callback, type, tip) {
   if (!value) {
     callback(new Error(tip + '不能为空'));
   } else if (!tool[`is${tool.upperFirstLetter(type)}`](value)) {

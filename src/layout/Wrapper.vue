@@ -28,6 +28,7 @@ export default {
   components: {WrapperLeft, WrapperTop, WrapperContent},
   mixins: [mixins.hook],
   data() {
+    console.log('wrapper-data');
     return {
       hasWrapperTop: true,
       hasWrapperLeft: true,
@@ -75,7 +76,7 @@ export default {
   created() {
     this.routes = this.$router.options.routes;
     this.initLayout();
-    this.$ajax.get('login');
+    this.$ajax.post('/login');
     this.$api.systemManage.delUser();
     console.log('wrapper-created');
   },
