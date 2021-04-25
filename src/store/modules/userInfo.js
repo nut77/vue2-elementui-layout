@@ -1,10 +1,4 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-// 解决刷新浏览器，数据消失问题
-import createPersistedState from 'vuex-persistedstate';
-
-Vue.use(Vuex);
-
+// 用户相关数据信息存储
 const state = {
   userInfo: {},
   isAdmin: false,
@@ -27,7 +21,7 @@ const mutations = {
   mutationIsRoot(state, {data}) {
     state.isRoot = data;
   },
-  mutationResetStore(state) {
+  mutationReset(state) {
     state.userInfo = {};
     state.isAdmin = false;
     state.isRoot = false;
@@ -44,16 +38,15 @@ const actions = {
   setIsRoot({commit}, {data}) {
     commit('mutationIsRoot', {data});
   },
-  resetStore({commit}) {
-    commit('mutationResetStore');
+  reset({commit}) {
+    commit('mutationReset');
   }
 };
 
-export default new Vuex.Store({
-  plugins: [createPersistedState()],
+export default {
+  namespaced: true,
   state,
   getters,
   mutations,
-  actions,
-  modules: {}
-});
+  actions
+};

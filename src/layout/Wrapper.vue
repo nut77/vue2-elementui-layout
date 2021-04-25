@@ -76,8 +76,6 @@ export default {
   created() {
     this.routes = this.$router.options.routes;
     this.initLayout();
-    this.$ajax.post('/login');
-    this.$api.systemManage.delUser();
     console.log('wrapper-created');
   },
   mounted() {

@@ -16,6 +16,7 @@ const hasWrapperTop = {
   hasWrapperLeft: false
 };
 const MENU_LIST = [
+  // [1, '/', '/', COMPONENT_EMPTY_PATH, Object.assign({redirect: '/home'}, pageIndividual)],
   [1, '首页', '/home', 'home/Index.vue', hasWrapperTop],
   [1, '登录', '/login', 'login/Index.vue', pageIndividual],
   [1, '加载页', '/loading', 'loading/Index.vue', pageIndividual],

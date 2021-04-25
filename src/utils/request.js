@@ -45,13 +45,16 @@ axiosInstance.interceptors.response.use(response => {
 
 /**
  * 构建请求参数
- * @param {Object} options - 请求参数
+ * @param {Object} [options={}] - 请求参数
  * @return {Object} 返回请求配置参数
  */
-const buildRequestConfig = (options) => {
+const buildRequestConfig = (options = {}) => {
   const config = Object.assign({}, options);
   delete config.contentType;
-  if (options.contentType) config.headers['Content-Type'] = options.contentType;
+  if (options.contentType) {
+    !config.headers && (config.headers = {});
+    config.headers['Content-Type'] = options.contentType;
+  }
   // 处理文件上传参数转换
   if ((config.headers && config.headers['Content-Type'] === 'multipart/form-data') || config.onUploadProgress) {
     const formData = new FormData();
@@ -73,10 +76,10 @@ const buildRequestConfig = (options) => {
 
 /**
  * 利用axios发送ajax请求，并拿到响应数据
- * @param {Object} options - 请求相关配置项
+ * @param {Object} [options={}] - 请求相关配置项
  * @return {Promise} 返回请求结果
  */
-const request = async (options) => {
+const request = async (options = {}) => {
   const config = buildRequestConfig(options);
   const res = await axiosInstance(config).catch(e => {
     return {

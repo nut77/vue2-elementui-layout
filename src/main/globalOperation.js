@@ -1,8 +1,8 @@
 // 需要全局引用的组件、过滤器、指令、混入、工具方法等
 import Filters from '@/filters';
 import Directives from '@/directives';
-import Components from './components';
-import Prototypes from './prototypes';
+import Components from '@c';
+import Prototypes from '@/utils';
 import Mixins from '@/mixins';
 
 export default {

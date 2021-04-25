@@ -48,7 +48,7 @@ module.exports = {
           '@': path.resolve(__dirname, './src'),
           '@a': path.resolve(__dirname, './src/assets'),
           '@p': path.resolve(__dirname, './src/pages'),
-          '@c': path.resolve(__dirname, './src/pages/components'),
+          '@c': path.resolve(__dirname, './src/components'),
           '@l': path.resolve(__dirname, './src/layout')
         }
       }

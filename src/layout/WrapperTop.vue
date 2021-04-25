@@ -19,7 +19,8 @@
       </el-menu-item>
     </el-menu>
     <div class="el-header-user">
-      username
+      {{$store.state.userInfo.username}}
+      <el-button type="danger" icon="el-icon-switch-button" circle @click="handleLogout"></el-button>
     </div>
   </el-header>
 </template>
@@ -37,6 +38,11 @@ export default {
   methods: {
     toggleCollapse() {
       this.$emit('toggleCollapse');
+    },
+    handleLogout() {
+      this.$store.commit('mutationResetStore');
+      localStorage.clear();
+      this.$router.push('/login');
     }
   },
   watch: {
