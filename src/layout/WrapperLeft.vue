@@ -1,6 +1,7 @@
 <template>
   <el-aside :style="{width: `${isCollapse ? 63 : 220}px !important`}">
     <el-menu
+      :default-openeds="defaultOpeneds"
       :collapse="isCollapse"
       :router="true"
       :default-active="activePath"
@@ -44,7 +45,8 @@ export default {
   props: ['navList', 'path', 'isCollapse'],
   data() {
     return {
-      activePath: this.path[this.path.length - 1]
+      activePath: this.path[this.path.length - 1],
+      defaultOpeneds: []
     };
   },
   methods: {
@@ -55,6 +57,7 @@ export default {
   watch: {
     path() {
       this.activePath = this.path[this.path.length - 1];
+      this.defaultOpeneds = this.path.length === 3 ? [this.path[1]] : [];
     }
   }
 };

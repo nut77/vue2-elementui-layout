@@ -22,13 +22,10 @@
 import WrapperLeft from './WrapperLeft';
 import WrapperTop from './WrapperTop';
 import WrapperContent from './WrapperContent';
-import mixins from '@/mixins';
 export default {
   name: 'Wrapper',
   components: {WrapperLeft, WrapperTop, WrapperContent},
-  mixins: [mixins.hook],
   data() {
-    console.log('wrapper-data');
     return {
       hasWrapperTop: true,
       hasWrapperLeft: true,
@@ -76,13 +73,6 @@ export default {
   created() {
     this.routes = this.$router.options.routes;
     this.initLayout();
-    console.log('wrapper-created');
-  },
-  mounted() {
-    console.log('wrapper-mounted');
-  },
-  updated() {
-    console.log('wrapper-updated');
   }
 };
 </script>

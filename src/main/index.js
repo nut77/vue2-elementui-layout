@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import App from '@l/App.vue';
+import App from '@l/Wrapper.vue';
 import router from '@/router';
 import store from '@/store';
 import ElementUI from 'element-ui';
