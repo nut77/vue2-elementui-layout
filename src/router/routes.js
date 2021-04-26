@@ -6,15 +6,26 @@ import MENU_LIST from './config';
  * name 导航中文名
  * path 导航对应的路径
  * redirect 非必填，重定向地址
- * componentPath 该页面对应的组件地址
+ * component 该页面组件
  * meta object-存一些额外的附件数据
  * meta-index number-导航层级，1表示一级导航，依次类推
+ * meta-fullPath string-该页面全路径
  * meta-hasWrapperTop boolean-表示该页面是否具有顶部模块
  * meta-hasWrapperLeft boolean-表示该页面是否具有左侧模块
  * meta-iconClass 表示该导航模块应用的css-class,
  * meta-isNav boolean-是否是导航
  */
 const COMPONENT_EMPTY_PATH = 'WrapperEmpty.vue';
+
+/**
+ * 生成上述路由配置
+ * @param {number} index - 页面层级
+ * @param {string} name - 页面名字
+ * @param {string} path - 页面路径
+ * @param {string} componentPath - 页面组件资源路径
+ * @param {Object} [config={}] - 页面的其它配置参数
+ * @param {Object[]} [children=[]] - 该页面的子组件配置
+ */
 function getMenuItemConfig(index, name, path, componentPath, config = {}, children = []) {
   const menuItemConfig = {
     name,
@@ -22,15 +33,24 @@ function getMenuItemConfig(index, name, path, componentPath, config = {}, childr
     component: loadComponent(componentPath || COMPONENT_EMPTY_PATH),
     meta: Object.assign({
       index,
+      fullPath: '',
       hasWrapperTop: true,
       hasWrapperLeft: true,
       isNav: true,
       iconClass: ''
     }, config)
   };
+  !config.fullPath && (menuItemConfig.meta.fullPath = path);
   if (config.redirect) menuItemConfig.redirect = config.redirect;
   if (children.length) menuItemConfig.children = [];
   for (const item of children) {
+    const fullPath = menuItemConfig.meta.fullPath + '/' + item[2];
+    // config 参数对应数组下标4, path 参数对应下标2，设置子页面全路径
+    if (item[4]) {
+      item[4].fullPath = fullPath;
+    } else {
+      item[4] = {fullPath};
+    }
     menuItemConfig.children.push(getMenuItemConfig(...item));
   }
   return menuItemConfig;

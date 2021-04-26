@@ -6,7 +6,7 @@
       :path="path"
       @toggleCollapse="toggleCollapse">
     </wrapper-top>
-    <el-container v-if="hasWrapperLeft">
+    <el-container v-if="hasWrapperLeft && !isOnlyNavTop">
       <wrapper-left
         :navList="menuLeft"
         :path="path"
@@ -38,6 +38,12 @@ export default {
   computed: {
     menuTop() {
       return this.routes.filter(item => item.meta.index === 1 && item.meta.isNav);
+    },
+    isOnlyNavTop() {
+      return this.$store.state.isOnlyNavTop;
+    },
+    isOnlyNavLeft() {
+      return this.$store.state.isOnlyNavLeft;
     }
   },
   methods: {
@@ -49,6 +55,10 @@ export default {
       this.hasWrapperLeft = route.meta.hasWrapperLeft;
     },
     setMenuLeft(route) {
+      if (this.isOnlyNavLeft) {
+        this.menuLeft = this.menuTop;
+        return;
+      }
       if (!this.routes || !route.matched.length) return;
       const parentPath = route.matched[0].path;
       const parentRouteConfig = this.routes.find(item => item.path === parentPath);

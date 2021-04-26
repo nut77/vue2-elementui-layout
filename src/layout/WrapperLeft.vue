@@ -9,50 +9,22 @@
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <template v-for="item of navList">
-        <el-menu-item
-          v-if="!item.children"
-          :index="getFullPath(path[0], item.path)"
-          :key="getFullPath(path[0], item.path)">
-          <template slot="title">
-            <i class="el-icon-eleme"></i>
-            <span>{{item.name}}</span>
-          </template>
-        </el-menu-item>
-        <el-submenu v-else :key="getFullPath(path[0], item.path)" :index="getFullPath(path[0], item.path)">
-          <template slot="title">
-            <i class="el-icon-eleme"></i>
-            <span>{{item.name}}</span>
-          </template>
-          <el-menu-item
-            v-for="itemc of item.children"
-            :index="getFullPath(path[0], item.path, itemc.path)"
-            :key="getFullPath(path[0], item.path, itemc.path)">
-            <template slot="title">
-              <i class="el-icon-eleme"></i>
-              <span>{{itemc.name}}</span>
-            </template>
-          </el-menu-item>
-        </el-submenu>
-      </template>
+      <wrapper-menu-item :navList="navList"></wrapper-menu-item>
     </el-menu>
   </el-aside>
 </template>
 
 <script>
+import WrapperMenuItem from './WrapperMenuItem';
 export default {
   name: 'WrapperLeft',
   props: ['navList', 'path', 'isCollapse'],
+  components: {WrapperMenuItem},
   data() {
     return {
       activePath: this.path[this.path.length - 1],
       defaultOpeneds: []
     };
-  },
-  methods: {
-    getFullPath(...rest) {
-      return rest.join('/');
-    }
   },
   watch: {
     path() {

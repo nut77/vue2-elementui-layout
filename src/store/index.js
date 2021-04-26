@@ -5,7 +5,12 @@ import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
+// isOnlyNavLeft、isOnlyNavTop最多只有一个为true
 const state = {
+  // 是否只有顶部导航
+  isOnlyNavTop: false,
+  // 是否只有左侧导航
+  isOnlyNavLeft: false,
   userInfo: {},
   isAdmin: false,
   isRoot: false

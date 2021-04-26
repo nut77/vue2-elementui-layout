@@ -11,7 +11,5 @@ export default {
 </script>
 
 <style scoped>
-  .box {
-    color: green;
-  }
+
 </style>

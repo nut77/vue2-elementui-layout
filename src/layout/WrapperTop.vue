@@ -2,21 +2,15 @@
   <el-header>
     <h3 class="el-header-title" @click="toggleCollapse">system name</h3>
     <el-menu
+      v-if="!isOnlyNavLeft"
       :router="true"
+      :default-openeds="defaultOpeneds"
       :default-active="activePath"
       mode="horizontal"
       background-color="#545c64"
       text-color="#fff"
       active-text-color="#ffd04b">
-      <el-menu-item
-        v-for="item of navList"
-        :index="item.path"
-        :key="item.name">
-        <template slot="title">
-          <i class="el-icon-location"></i>
-          <span>{{item.name}}</span>
-        </template>
-      </el-menu-item>
+      <wrapper-menu-item :navList="navList" :isRecursive="isOnlyNavTop"></wrapper-menu-item>
     </el-menu>
     <div class="el-header-user">
       {{$store.state.userInfo.username}}
@@ -26,14 +20,24 @@
 </template>
 
 <script>
+import WrapperMenuItem from './WrapperMenuItem';
 export default {
   name: 'WrapperTop',
   props: ['navList', 'path'],
+  components: {WrapperMenuItem},
   data() {
     return {
-      test: '',
-      activePath: this.path[0]
+      activePath: this.path[0],
+      defaultOpeneds: []
     };
+  },
+  computed: {
+    isOnlyNavTop() {
+      return this.$store.state.isOnlyNavTop;
+    },
+    isOnlyNavLeft() {
+      return this.$store.state.isOnlyNavLeft;
+    }
   },
   methods: {
     toggleCollapse() {
@@ -48,6 +52,7 @@ export default {
   watch: {
     path() {
       this.activePath = this.path[0];
+      this.defaultOpeneds = this.path.length === 3 ? [this.path[1]] : [];
     }
   }
 };
@@ -67,5 +72,8 @@ export default {
   }
   .el-menu {
     flex: 1;
+  }
+  .el-menu--horizontal .el-menu-item-box {
+    display: flex;
   }
 </style>

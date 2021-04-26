@@ -13,7 +13,8 @@ router.beforeEach((to, from, next) => {
   // 验证是否登录
   const token = localStorage.getItem('token');
   if (to.path !== '/login' && (token === 'null' || !token)) {
-    next('login');
+    // next('login');
+    next();
     return false;
   }
 
