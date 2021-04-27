@@ -3,8 +3,8 @@
     <h3 class="el-header-title" @click="toggleCollapse">system name</h3>
     <el-menu
       v-if="!isOnlyNavLeft"
+      @select="$emit('setEnableSetMenuLeft', true)"
       :router="true"
-      :default-openeds="defaultOpeneds"
       :default-active="activePath"
       mode="horizontal"
       background-color="#545c64"
@@ -27,8 +27,7 @@ export default {
   components: {WrapperMenuItem},
   data() {
     return {
-      activePath: this.path[0],
-      defaultOpeneds: []
+      activePath: this.$store.state.isOnlyNavTop ? this.path[this.path.length - 1] : this.path[0]
     };
   },
   computed: {
@@ -47,12 +46,6 @@ export default {
       this.$store.commit('mutationResetStore');
       localStorage.clear();
       this.$router.push('/login');
-    }
-  },
-  watch: {
-    path() {
-      this.activePath = this.path[0];
-      this.defaultOpeneds = this.path.length === 3 ? [this.path[1]] : [];
     }
   }
 };

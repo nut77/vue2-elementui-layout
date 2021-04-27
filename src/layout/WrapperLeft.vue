@@ -1,7 +1,6 @@
 <template>
   <el-aside :style="{width: `${isCollapse ? 63 : 220}px !important`}">
     <el-menu
-      :default-openeds="defaultOpeneds"
       :collapse="isCollapse"
       :router="true"
       :default-active="activePath"
@@ -22,14 +21,12 @@ export default {
   components: {WrapperMenuItem},
   data() {
     return {
-      activePath: this.path[this.path.length - 1],
-      defaultOpeneds: []
+      activePath: this.path[this.path.length - 1]
     };
   },
   watch: {
     path() {
       this.activePath = this.path[this.path.length - 1];
-      this.defaultOpeneds = this.path.length === 3 ? [this.path[1]] : [];
     }
   }
 };

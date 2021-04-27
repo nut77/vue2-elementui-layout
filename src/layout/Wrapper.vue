@@ -4,10 +4,12 @@
       v-if="hasWrapperTop"
       :navList="menuTop"
       :path="path"
+      @setEnableSetMenuLeft="setEnableSetMenuLeft"
       @toggleCollapse="toggleCollapse">
     </wrapper-top>
-    <el-container v-if="hasWrapperLeft && !isOnlyNavTop">
+    <el-container v-if="(hasWrapperLeft && !isOnlyNavTop) || isOnlyNavLeft">
       <wrapper-left
+        :key="menuLeftKey"
         :navList="menuLeft"
         :path="path"
         :isCollapse="isCollapse">
@@ -31,6 +33,8 @@ export default {
       hasWrapperLeft: true,
       routes: null,
       menuLeft: [],
+      menuLeftKey: Date.now(),
+      isEnableSetMenuLeft: true,
       isCollapse: false,
       path: ['/home']
     };
@@ -47,6 +51,9 @@ export default {
     }
   },
   methods: {
+    setEnableSetMenuLeft(enable) {
+      this.isEnableSetMenuLeft = enable;
+    },
     toggleCollapse() {
       this.isCollapse = !this.isCollapse;
     },
@@ -55,6 +62,7 @@ export default {
       this.hasWrapperLeft = route.meta.hasWrapperLeft;
     },
     setMenuLeft(route) {
+      if (this.isOnlyNavTop) return;
       if (this.isOnlyNavLeft) {
         this.menuLeft = this.menuTop;
         return;
@@ -63,6 +71,9 @@ export default {
       const parentPath = route.matched[0].path;
       const parentRouteConfig = this.routes.find(item => item.path === parentPath);
       this.menuLeft = parentRouteConfig && parentRouteConfig.children ? parentRouteConfig.children.filter(item => item.meta.isNav) : [];
+      // 顶部 + 左侧 这种导航结构，当点击顶部菜单时，才去更新左侧导航菜单，要给左侧导航菜单设置key不然多级导航展开的不会收缩
+      this.menuLeftKey = Date.now();
+      this.setEnableSetMenuLeft(false);
     },
     setPath(route) {
       this.path = route.matched.length ? route.matched.map(item => item.path) : [route.path || '/home'];
@@ -70,14 +81,13 @@ export default {
     initLayout(route) {
       route = route || this.$route;
       this.refreshWrapper(route);
-      this.setMenuLeft(route);
       this.setPath(route);
+      (this.isEnableSetMenuLeft || !this.menuLeft.length) && this.setMenuLeft(route);
     }
   },
   watch: {
     $route(toRoute) {
       this.initLayout(toRoute);
-      console.log(this.$tool.formatDate());
     }
   },
   created() {

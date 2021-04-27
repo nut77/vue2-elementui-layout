@@ -1,6 +1,6 @@
 <template>
   <div class="el-menu-item-box">
-    <template v-for="item of navList">
+    <template v-for="item of navList.filter(listItem => listItem.meta.isNav)">
       <el-menu-item
         v-if="!item.children || (item.children && !isRecursive)"
         :index="item.meta.fullPath"
