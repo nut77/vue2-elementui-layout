@@ -184,14 +184,15 @@ const isDomain = (str) => {
 };
 
 /**
- * 判断输入的密码格式是否正确（密码为6到16位的大小写字母、数字和特殊字符混合）
+ * 判断输入的密码格式是否正确（密码为8到20位的大小写字母、数字和特殊字符混合）
  * @param {string} pwd - 待判断密码
+ * @param {boolean} [isMustSpecialChar = true] - 是否必须包含特殊字符
  * @return {boolean}
  */
-const isValidPassword = (pwd) => {
+const isValidPassword = (pwd, isMustSpecialChar = true) => {
   let count = 0;
-  // 判断密码长度是6-16位
-  if (pwd.length >= 6 && pwd.length <= 16) ++count;
+  // 判断密码长度是8-20位
+  if (pwd.length >= 8 && pwd.length <= 20) ++count;
 
   // 判断密码是否包含大写字母
   if (/[A-Z]+/.test(pwd)) ++count;
@@ -201,6 +202,8 @@ const isValidPassword = (pwd) => {
 
   // 判断密码是否包含数字
   if (/[0-9]+/.test(pwd)) ++count;
+
+  if (!isMustSpecialChar) return count === 4;
 
   // 判断密码是否包含特殊字符
   // eslint-disable-next-line
@@ -709,6 +712,11 @@ const numberFixed = (val, fixedLen = 2, isCeil = true) => {
   return str;
 };
 
+// 获取完整的请求地址
+const getFullUrl = (url, base = 'VUE_APP_AXIOS_BASE_URL') => {
+  return (process.env[base] || '/api') + url;
+};
+
 export default {
   hasToken,
   showMessage,
@@ -738,5 +746,6 @@ export default {
   upperFirstLetter,
   getParentNodeByClass,
   numberWithCommas,
-  numberFixed
+  numberFixed,
+  getFullUrl
 };

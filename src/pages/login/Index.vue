@@ -58,7 +58,7 @@ export default {
         userPwd: ''
       },
       loginDataRule: {
-        username: [{required: true, fieldType: ' * 请输入用户名'}],
+        username: [{required: true, message: ' * 请输入用户名'}],
         userPwd: [{required: true, message: ' * 请输入密码'}]
       },
       loading: false,
