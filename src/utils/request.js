@@ -5,7 +5,7 @@ import qs from 'qs';
 
 // 创建一个 axios 实例
 const axiosInstance = axios.create({
-  baseURL: process.env.VUE_APP_AXIOS_BASE_URL,
+  baseURL: process.env.VUE_APP_AXIOS_BASE_URL || '/api',
   timeout: 1000 * 60
 });
 
@@ -17,12 +17,12 @@ const MESSAGE = {
 
 // 请求拦截器
 axiosInstance.interceptors.request.use(config => {
-  const token = store.state.token;
+  const token = store.state.userInfo.token;
   token && (config.headers.Authorization = token);
-  if (config.headers['Content-Type'] === 'application/json') {
+  if (config.headers['Content-Type'].includes('application/json')) {
     config.data = JSON.stringify(config.data);
   }
-  if (config.headers['Content-Type'] === 'multipart/form-data') {
+  if (config.headers['Content-Type'].includes('multipart/form-data')) {
     return config;
   }
   if (config.method === 'post' || config.method === 'put' || config.method === 'delete') {
@@ -51,12 +51,10 @@ axiosInstance.interceptors.response.use(response => {
 const buildRequestConfig = (options = {}) => {
   const config = Object.assign({}, options);
   delete config.contentType;
-  if (options.contentType) {
-    !config.headers && (config.headers = {});
-    config.headers['Content-Type'] = options.contentType;
-  }
+  !config.headers && (config.headers = {});
+  config.headers['Content-Type'] = options.contentType || 'application/json;charset=utf-8';
   // 处理文件上传参数转换
-  if ((config.headers && config.headers['Content-Type'] === 'multipart/form-data') || config.onUploadProgress) {
+  if ((config.headers && config.headers['Content-Type'].includes('multipart/form-data')) || config.onUploadProgress) {
     const formData = new FormData();
     for (const key in options.data) {
       const files = options.data[key];
@@ -97,11 +95,11 @@ const request = async (options = {}) => {
   if (res.status === 401) {
     location.pathname !== '/login' && (res.message = MESSAGE.PERMISSION_DENIED);
     localStorage.clear();
-    store.commit('mutationResetStore');
-    location.path = '/login';
+    store.commit('resetUserInfo');
+    location.pathname = '/login';
     return res;
   }
-  if (res.status !== 200) res.message = MESSAGE.NETWORK_ERR;
+  if (res.status === 500) res.message = MESSAGE.NETWORK_ERR;
   return res;
 };
 
