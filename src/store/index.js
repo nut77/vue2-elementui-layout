@@ -1,56 +1,37 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import userInfo from '@/store/modules/userInfo';
 // 解决刷新浏览器，数据消失问题
 import createPersistedState from 'vuex-persistedstate';
 
 Vue.use(Vuex);
 
-// isOnlyNavLeft、isOnlyNavTop最多只有一个为true
+const userInfoInit = {
+  id: '',
+  username: '',
+  role: '',
+  token: ''
+};
 const state = {
   // 是否只有顶部导航
   isOnlyNavTop: false,
   // 是否只有左侧导航
   isOnlyNavLeft: false,
-  userInfo: {},
-  isAdmin: false,
-  isRoot: false
+  userInfo: {...userInfoInit}
 };
 
 const getters = {
-  getUserInfo: state => state.userInfo,
-  getIsAdmin: state => state.isAdmin,
-  getIsRoot: state => state.isRoot
+  username: state => state.userInfo.username || 'admin',
+  isAdmin: state => state.userInfo.role === '管理员',
+  userRole: state => state.userInfo.role || '管理员'
 };
 
 const mutations = {
-  mutationUserInfo(state, {data}) {
-    state.userInfo = data;
+  setUserInfo(state, data) {
+    Object.assign(state.userInfo, data);
   },
-  mutationIsAdmin(state, {data}) {
-    state.isAdmin = data;
-  },
-  mutationIsRoot(state, {data}) {
-    state.isRoot = data;
-  },
-  mutationResetStore(state) {
-    state.userInfo = {};
-    state.isAdmin = false;
-    state.isRoot = false;
-  }
-};
-
-const actions = {
-  setUserInfo({commit}, {data}) {
-    commit('mutationUserInfo', {data});
-  },
-  setIsAdmin({commit}, {data}) {
-    commit('mutationIsAdmin', {data});
-  },
-  setIsRoot({commit}, {data}) {
-    commit('mutationIsRoot', {data});
-  },
-  resetStore({commit}) {
-    commit('mutationResetStore');
+  resetUserInfo(state) {
+    Object.assign(state.userInfo, userInfoInit);
   }
 };
 
@@ -60,6 +41,7 @@ export default new Vuex.Store({
   state,
   getters,
   mutations,
-  actions,
-  modules: {}
+  modules: {
+    userInfo
+  }
 });
