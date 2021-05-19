@@ -1,10 +1,19 @@
 // 导航配置
 const COMPONENT_EMPTY_PATH = 'WrapperEmpty.vue';
-// 单独的页面基本配置
+// 管理员页面配置
+const pageUserAdmin = {
+  authority: ['管理员']
+};
+// 所有用户共有的页面
+const pageUserAll = {
+  authority: ['管理员', '普通用户']
+};
+// 独立的页面基本配置
 const pageIndividual = {
   isNav: false,
   hasWrapperTop: false,
-  hasWrapperLeft: false
+  hasWrapperLeft: false,
+  ...pageUserAll
 };
 // 详情页基本配置
 const pageDetail = {
@@ -17,7 +26,7 @@ const hasWrapperTop = {
 };
 const MENU_LIST = [
   // [1, '/', '/', COMPONENT_EMPTY_PATH, Object.assign({redirect: '/home'}, pageIndividual)],
-  [1, '首页', '/home', 'home/Index.vue', hasWrapperTop],
+  [1, '首页', '/home', 'home/Index.vue', {...hasWrapperTop, iconClass: ''}],
   [1, '登录', '/login', 'login/Index.vue', pageIndividual],
   [1, '加载页', '/loading', 'loading/Index.vue', pageIndividual],
   [1, '错误页面', '/error', 'error/Index.vue', pageIndividual],
@@ -41,7 +50,7 @@ const MENU_LIST = [
   [1, '系统管理', '/system-manage', COMPONENT_EMPTY_PATH, {redirect: '/system-manage/customer'}, [
     [2, '客户管理', 'customer', 'systemManage/Customer.vue'],
     [2, '用户管理', 'user', 'systemManage/User.vue'],
-    [2, '操作日志', 'log', 'systemManage/Log.vue']
+    [2, '操作日志', 'log', 'systemManage/Log.vue', pageUserAdmin]
   ]]
 ];
 

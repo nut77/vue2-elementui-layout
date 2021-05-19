@@ -14,6 +14,8 @@ import MENU_LIST from './config';
  * meta-hasWrapperLeft boolean-表示该页面是否具有左侧模块
  * meta-iconClass 表示该导航模块应用的css-class,
  * meta-isNav boolean-是否是导航
+ * meta-hasWrapperSubNav boolean-表示该页面是否具有子导航
+ * meta-authority [string]-该页面所属用户权限（'管理员'、'普通用户'）
  */
 const COMPONENT_EMPTY_PATH = 'WrapperEmpty.vue';
 
@@ -36,8 +38,10 @@ function getMenuItemConfig(index, name, path, componentPath, config = {}, childr
       fullPath: '',
       hasWrapperTop: true,
       hasWrapperLeft: true,
+      hasWrapperSubNav: true,
       isNav: true,
-      iconClass: ''
+      iconClass: '',
+      authority: ['普通用户']
     }, config)
   };
   !config.fullPath && (menuItemConfig.meta.fullPath = path);
