@@ -12,7 +12,8 @@ const axiosInstance = axios.create({
 // 响应异常提示
 const MESSAGE = {
   NETWORK_ERR: '哎哟,出问题啦,刷新界面试试！',
-  PERMISSION_DENIED: '凭证失效，请重新登录'
+  PERMISSION_DENIED: '凭证失效，请重新登录',
+  TIMEOUT: '连接超时，请检查网络'
 };
 
 // 请求拦截器
@@ -80,9 +81,10 @@ const buildRequestConfig = (options = {}) => {
 const request = async (options = {}) => {
   const config = buildRequestConfig(options);
   const res = await axiosInstance(config).catch(e => {
+    const isTimeout = e.response.data && e.response.data.includes('ETIMEDOUT');
     return {
-      message: e.response.data || MESSAGE.NETWORK_ERR,
-      status: e.response.status || 500,
+      message: isTimeout ? MESSAGE.TIMEOUT : (e.response.data || MESSAGE.NETWORK_ERR),
+      status: isTimeout ? 502 : (e.response.status || 500),
       statusText: e.response.statusText || ''
     };
   });
