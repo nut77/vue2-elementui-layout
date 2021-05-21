@@ -81,7 +81,7 @@ const buildRequestConfig = (options = {}) => {
 const request = async (options = {}) => {
   const config = buildRequestConfig(options);
   const res = await axiosInstance(config).catch(e => {
-    const isTimeout = e.response.data && e.response.data.includes('ETIMEDOUT');
+    const isTimeout = (e.response.data && e.response.data.includes('ETIMEDOUT')) || (e.response.status === 502);
     return {
       message: isTimeout ? MESSAGE.TIMEOUT : (e.response.data || MESSAGE.NETWORK_ERR),
       status: isTimeout ? 502 : (e.response.status || 500),
@@ -101,7 +101,7 @@ const request = async (options = {}) => {
     location.pathname = '/login';
     return res;
   }
-  if (res.status === 500) res.message = MESSAGE.NETWORK_ERR;
+  if (res.status >= 500 && res.status !== 502) res.message = MESSAGE.NETWORK_ERR;
   return res;
 };
 
