@@ -30,9 +30,6 @@ module.exports = {
     proxy: {
       '/api': {
         target: 'http://localhost:8090/api',
-        ws: true,
-        // 允许websocket跨域
-        changeOrigin: true,
         pathRewrite: {
           '^/api': ''
         }
@@ -50,9 +47,6 @@ module.exports = {
         '@c': path.resolve(__dirname, './src/components'),
         '@l': path.resolve(__dirname, './src/layout')
       }
-    },
-    module: {
-      unknownContextCritical: false
     }
   },
   // css相关配置
