@@ -1,0 +1,213 @@
+// 重置element-ui的部分样式
+
+// NavMenu
+.el-menu,
+.el-menu-item {
+  border: 0 none !important;
+}
+
+.el-menu--subNav {
+  @height: 50px;
+
+  &.el-menu--horizontal {
+    height: @height;
+    background-color: @background-color-base;
+
+    .el-menu-item {
+      padding: 0 30px;
+    }
+  }
+
+  .el-menu-item {
+    display: flex;
+    align-items: center;
+    height: @height  !important;
+    line-height: @height  !important;
+  }
+}
+
+// Button
+.el-button {
+  color: white !important;
+}
+.el-button--small {
+  padding: 5px 10px !important;
+}
+.el-button.is-disabled, .el-button.is-disabled:focus, .el-button.is-disabled:hover {
+  background-color: @color-text-placeholder !important;
+  border-color: @color-text-placeholder !important;
+}
+
+// Card
+.el-card {
+  border: 1px solid @color-black  !important;
+  background-color: @background-color-base-opacity  !important;
+}
+
+// Form
+.el-form-item.is-required::before {
+  position: absolute;
+  margin-top: 13px;
+  left: 24px;
+  color: @color-danger;
+  font-size: 20px;
+  font-weight: bold;
+  content: "*";
+}
+.el-form-item__label {
+  &::before {
+    display: none;
+  }
+  .tj !important;
+}
+
+// Dialog
+.el-dialog__title {
+  .dinlineb;
+  width: calc(~"100% - 30px");
+  height: 24px;
+  font-size: 16px !important;
+  font-weight: bold !important;
+  line-height: 14px !important;
+  color: @color-text-regular !important;
+  .ellipsis;
+  .tc;
+}
+.data-node-detail-dialog .el-dialog__title {
+  text-align: left !important;
+}
+.el-dialog__headerbtn .el-dialog__close {
+  top: 22px !important;
+  font-size: 25px !important;
+}
+.el-dialog__header {
+  padding: 30px 30px 0 30px !important;
+}
+.el-dialog__body {
+  padding: 30px 30px 0 40px !important;
+}
+.el-dialog__footer {
+  padding: 10px 30px 30px 30px !important;
+  text-align: right !important;
+  .el-button + .el-button {
+    margin-left: 20px !important;
+  }
+}
+.v-modal {
+  opacity: .6 !important;
+  background-color: @background-color-darker !important;
+}
+
+// Table
+.el-table {
+  font-size: 12px !important;
+  background-color: rgba(16, 16, 29, .8) !important;
+  &:before {
+    height: 0 !important;
+  }
+  .cell {
+    padding-left: 15px !important;
+  }
+  thead {
+    color: @background-color-lighter !important;
+  }
+  th {
+    background: @color-black-lighter !important;
+    font-size: 14px;
+    font-weight: bold;
+  }
+}
+.el-table th > .cell {
+  padding-left: 15px !important;
+}
+.el-table__header tr,
+.el-table__header th {
+  padding: 0 !important;
+  height: 40px !important;
+}
+.el-table__body tr,
+.el-table__body td {
+  padding: 0 !important;
+  height: 40px !important;
+}
+.el-table td,
+.el-table th.is-leaf {
+  border-bottom: 0 !important;
+}
+.el-table--striped .el-table__body tr.el-table__row--striped.el-table__row--striped.el-table__row--striped td {
+  background-color: rgba(16, 16, 29, .8) !important;
+}
+.el-table__body-wrapper {
+  .wfull;
+  height: calc(100% - 50px);
+  overflow: auto !important;
+}
+.el-table__empty-block {
+  font-size: 0;
+  .box--empty;
+}
+
+// Divider
+.el-divider__text.is-center {
+  padding: 5px 10px;
+  color: @color-info;
+  font-size: 14px;
+}
+
+// Checkbox
+.el-checkbox__inner {
+  background-color: @color-text-regular !important;
+}
+.el-checkbox__input.is-checked .el-checkbox__inner {
+  background-color: @color-primary !important;
+  border-color: @color-primary !important;
+}
+
+// Message
+.el-message {
+  height: 48px;
+}
+
+.message(@bgColor, @bdColor) {
+  top: 80px !important;
+  background-color: @bgColor !important;
+  border-color: @bdColor !important;
+  border-radius: 5px !important;
+}
+
+.el-message__icon,
+.el-message__content {
+  color: @color-text-primary  !important;
+}
+
+.el-message--success {
+  .message(@color-success, @color-success);
+}
+
+.el-message--error {
+  .message(@color-danger, @color-danger);
+}
+
+.el-message--warning {
+  .message(@color-warning, @color-warning);
+}
+
+// v-loading
+.el-loading-mask {
+  background-color: @background-color-darker !important;
+}
+
+// Tooltip
+.el-tooltip__popper {
+  max-width: 400px;
+  background: @color-black-lighter !important;
+  color: @color-text-primary !important;
+  border: 1px solid @color-text-primary;
+  > p {
+    max-height: 400px;
+    overflow: auto;
+  }
+  .popper__arrow:after {
+    border-top-color: @color-black-lighter !important;
+  }
+}

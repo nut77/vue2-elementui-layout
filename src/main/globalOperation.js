@@ -46,7 +46,6 @@ export default {
   // 将方法挂载在原型上
   registerPrototypes(Vue) {
     const Prototypes = {api: Api, ...getModules('utils')};
-    debugger;
     for (const name in Prototypes) {
       Vue.prototype['$' + name] = Prototypes[name];
     }
