@@ -8,7 +8,7 @@ module.exports = {
   pages: {
     index: {
       entry: 'src/main/index.js',
-      title: 'system name',
+      title: process.env.VUE_APP_SYSTEM_NAME,
       // 在这个页面中包含的块，默认情况下会包含提取出来的通用 chunk 和 vendor chunk。
       chunks: ['chunk-vendors', 'chunk-common', 'index']
     }
@@ -39,20 +39,21 @@ module.exports = {
       }
     }
   },
-  configureWebpack: config => {
+  configureWebpack: {
     // 别名配置
-    Object.assign(config, {
-      resolve: {
-        extensions: ['.js', '.json', '.vue'],
-        alias: {
-          '@': path.resolve(__dirname, './src'),
-          '@a': path.resolve(__dirname, './src/assets'),
-          '@p': path.resolve(__dirname, './src/pages'),
-          '@c': path.resolve(__dirname, './src/components'),
-          '@l': path.resolve(__dirname, './src/layout')
-        }
+    resolve: {
+      extensions: ['.js', '.json', '.vue'],
+      alias: {
+        '@': path.resolve(__dirname, './src'),
+        '@a': path.resolve(__dirname, './src/assets'),
+        '@p': path.resolve(__dirname, './src/pages'),
+        '@c': path.resolve(__dirname, './src/components'),
+        '@l': path.resolve(__dirname, './src/layout')
       }
-    });
+    },
+    module: {
+      unknownContextCritical: false
+    }
   },
   // css相关配置
   /*css: {

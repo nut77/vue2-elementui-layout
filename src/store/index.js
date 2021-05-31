@@ -17,7 +17,11 @@ const state = {
   isOnlyNavTop: false,
   // 是否只有左侧导航
   isOnlyNavLeft: false,
-  userInfo: {...userInfoInit}
+  userInfo: {...userInfoInit},
+  systemInfo: {
+    name: process.env.VUE_APP_SYSTEM_NAME,
+    version: process.env.VUE_APP_SYSTEM_VERSION
+  }
 };
 
 const getters = {

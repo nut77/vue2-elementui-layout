@@ -81,7 +81,8 @@ const buildRequestConfig = (options = {}) => {
 const request = async (options = {}) => {
   const config = buildRequestConfig(options);
   const res = await axiosInstance(config).catch(e => {
-    const isTimeout = (e.response.data && e.response.data.includes('ETIMEDOUT')) || (e.response.status === 502);
+    const isTimeout = (e.response.data && typeof e.response.data === 'string' && e.response.data.includes('ETIMEDOUT')) ||
+      (e.response.status === 502);
     return {
       message: isTimeout ? MESSAGE.TIMEOUT : (e.response.data || MESSAGE.NETWORK_ERR),
       status: isTimeout ? 502 : (e.response.status || 500),
