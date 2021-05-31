@@ -1,75 +1,67 @@
 export default {
   data() {
     return {
-      pageLoading: false,
-      pagingData: {
+      table: {
+        isLoading: false,
+        column: [],
+        data: [],
+        defaultSort: {prop: 'createTime', order: 'descending'},
+        sortOrders: ['descending', 'ascending'],
+        orderField: '',
+        orderBy: 'DESC',
+        selection: ''
+      },
+      pagination: {
         size: 30,
         current: 1,
         sizes: [30, 70, 100, 150],
         total: 0
-      },
-      tableData: {
-        loading: false,
-        column: [],
-        data: [],
-        defaultProp: {prop: 'createTime', order: 'descending'},
-        sortOrders: ['descending', 'ascending']
-      },
-      orderField: '',
-      orderBy: 'DESC',
-      tableSelectionData: []
+      }
     };
   },
   methods: {
     /**
      * 分页事件
-     * @param val         值
-     * @param type        分页类型：size：每页条数，current：当前页
+     * @param {number} val - 值
+     * @param {string} type - 分页类型，size：修改分页大小，current：查看指定页数
      */
     pagingEvent(val, type) {
       if (type === 'size') {
-        this.pagingData.size = val;
-        this.pagingData.current = 1;
+        this.pagination.size = val;
+        this.pagination.current = 1;
       } else {
-        this.pagingData.current = val;
+        this.pagination.current = val;
       }
       this.getTableData();
     },
-
-    /** 表格排序 */
+    // 表格排序
     sortChange({column, prop, order}) {
-      this.orderField = prop;
-      this.orderBy = order === 'ascending' ? 'ASC' : 'DESC';
-
+      this.table.orderField = prop;
+      this.table.orderBy = order === 'ascending' ? 'ASC' : 'DESC';
       this.getTableData();
     },
-
-    /* 搜索、新增、删除 表格数据时调用 */
-    refreshTableData() {
-      this.pagingData.current = 1;
+    // 搜索、新增、删除 表格数据时调用
+    refreshTableData(obj) {
+      this.pagination.current = 1;
       this.getTableData();
     },
-
-    /** 表格勾选 */
+    // 表格勾选
     tableSelection(row) {
-      this.tableSelectionData = row;
+      this.table.selection = row;
     },
-
-    /* 获取分页参数 */
+    // 获取分页参数
     getPageParams() {
       return {
-        currentPage: this.pagingData.current,
-        pageSize: this.pagingData.size
+        currentPage: this.pagination.current,
+        pageSize: this.pagination.size
       };
     },
-
-    /* 表格勾选参数 */
-    tableSelectParams(key, temp = this.tableSelectionData) {
+    // 表格勾选参数
+    tableSelectParams(key, temp = this.table.selection) {
       const list = [];
       temp.map(it => list.push(it[key]));
       return list;
     },
-
     /**
      * 下载
      * @param url               接口地址
@@ -88,7 +80,6 @@ export default {
       el.click();
       document.body.removeChild(el);
     },
-
     /**
      * 下载--带header
      * @param url               接口地址
@@ -135,19 +126,11 @@ export default {
         }
       }
     },
-
     // 拼接get参数
     getDownLoadParam(obj) {
       delete obj.currentPage;
       delete obj.pageSize;
       return obj;
-    },
-
-    /* 威胁告警、威胁分析、数据节点-列表刷新 */
-    threatRefreshTableData(obj) {
-      this.orderField = obj.orderField;
-      this.orderBy = obj.orderBy;
-      this.refreshTableData();
     }
   }
 };

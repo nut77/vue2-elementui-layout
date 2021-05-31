@@ -53,7 +53,7 @@ export default {
     }
   },
   watch: {
-    nodeId: function (val) {
+    nodeId(val) {
       this.show = !!val;
     }
   }
