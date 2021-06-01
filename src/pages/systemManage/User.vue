@@ -1,48 +1,46 @@
 <template>
-  <div class="full" v-loading="isLoading">
+  <div v-loading="isLoading">
     <div class="mgb20">
       <el-button type="primary" @click="editEvidenceEvt('add')">新建用户</el-button>
     </div>
-    <div class="system-table">
-      <base-table
-        :pagination="pagination"
-        :table="table"
-        @sizeChange="(val, type) => pagingEvent(val, type)"
-        @currentChange="(val, type) => pagingEvent(val, type)">
-        <template columnType>
-          <el-table-column type="index" width="80" label="序号" align="center"></el-table-column>
-        </template>
-        <template #operator>
-          <el-table-column
-            label="操作"
-            prop="taskName"
-            :min-width="100"
-            :show-overflow-tooltip="true"
-            align="center">
-            <template slot-scope="scope">
-              <el-button
-                title="编辑"
-                type="primary"
-                size="small"
-                class="table-operator table-edit"
-                :disabled="scope.row.username === 'admin'"
-                @click="editEvidenceEvt('edit', scope.row)">
-                编辑
-              </el-button>
-              <el-button
-                title="删除"
-                type="danger"
-                size="small"
-                class="table-operator table-delete"
-                :disabled="scope.row.username === 'admin'"
-                @click="OperatorEvt('delete', scope.row)">
-                删除
-              </el-button>
-            </template>
-          </el-table-column>
-        </template>
-      </base-table>
-    </div>
+    <base-table
+      :pagination="pagination"
+      :table="table"
+      @sizeChange="(val, type) => pagingEvent(val, type)"
+      @currentChange="(val, type) => pagingEvent(val, type)">
+      <template columnType>
+        <el-table-column type="index" width="80" label="序号" align="center"></el-table-column>
+      </template>
+      <template #operator>
+        <el-table-column
+          label="操作"
+          prop="taskName"
+          :min-width="100"
+          :show-overflow-tooltip="true"
+          align="center">
+          <template slot-scope="scope">
+            <el-button
+              title="编辑"
+              type="primary"
+              size="small"
+              class="table-operator table-edit"
+              :disabled="scope.row.username === 'admin'"
+              @click="editEvidenceEvt('edit', scope.row)">
+              编辑
+            </el-button>
+            <el-button
+              title="删除"
+              type="danger"
+              size="small"
+              class="table-operator table-delete"
+              :disabled="scope.row.username === 'admin'"
+              @click="OperatorEvt('delete', scope.row)">
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </template>
+    </base-table>
 
     <!--添加/编辑用户-->
     <base-dialog
@@ -69,7 +67,7 @@
           </el-form-item>
           <el-form-item label="密码" prop="password" :required="isPasswordRequired">
             <el-input
-              v-if="editUserData.type === 'add' || resetPassword"
+              v-if="editUserData.type === 'add' || isResetPassword"
               maxlength=20
               type="password"
               placeholder="请输入密码"
@@ -77,9 +75,9 @@
               clearable
               onpaste="return false">
             </el-input>
-            <el-button v-else @click="resetPassword = true">重置</el-button>
+            <el-button v-else @click="isResetPassword = true">重置</el-button>
           </el-form-item>
-          <el-form-item v-if="editUserData.type === 'add' || resetPassword" label="确认密码" prop="repeatPassword">
+          <el-form-item v-if="editUserData.type === 'add' || isResetPassword" label="确认密码" prop="repeatPassword">
             <el-input
               maxlength=20
               type="password"
@@ -140,8 +138,7 @@ export default {
     };
     return {
       isLoading: true,
-      msg: '',
-      resetPassword: false,
+      isResetPassword: false,
       operatorData: {
         title: '',
         nodeId: null,
@@ -187,23 +184,23 @@ export default {
   },
   computed: {
     isPasswordRequired() {
-      return !(this.editUserData.editUserForm.id && !this.resetPassword);
+      return !(this.editUserData.editUserForm.id && !this.isResetPassword);
     }
   },
   methods: {
     async getTableData() {
       this.isLoading = true;
-      const result = await this.$api.systemManage.userList(this.getPageParams());
+      const res = await this.$api.systemManage.getUser(this.getPageParams());
       this.isLoading = false;
-      if (!!result && result.status === 200) {
-        this.table.data = (result.data || {data: []}).data;
-        this.pagination.total = (result.data || {total: []}).total;
+      if (!!res && res.status === 200) {
+        this.table.data = (res.data || {data: []}).data;
+        this.pagination.total = (res.data || {total: []}).total;
       } else {
-        this.msg = result.message;
+        this.$message.error(res.message);
       }
     },
     editEvidenceEvt(type, row) {
-      this.resetPassword = false;
+      this.isResetPassword = false;
       if (this.$refs.editUserForm !== undefined) {
         this.$refs.editUserForm.resetFields();
       }
@@ -224,14 +221,14 @@ export default {
     },
     async submitOperatorEvt() {
       this.$refs.delDialog.loadingOpen();
-      const result = await this.$api.systemManage.delUser(this.operatorData.requestParams);
+      const res = await this.$api.systemManage.delUser(this.operatorData.requestParams);
       this.$refs.delDialog.loadingClose();
-      if (!!result && result.status === 200) {
+      if (!!res && res.status === 200) {
         this.operatorData.nodeId = null;
         this.$message.success('删除用户成功');
         this.refreshTableData();
       } else {
-        this.$message.error(result.message);
+        this.$message.error(res.message);
       }
     },
     submitFormEvt() {
@@ -248,25 +245,25 @@ export default {
         if (this.isPasswordRequired) {
           params.password = SHA256.hmac(this.editUserData.editUserForm.username, this.editUserData.editUserForm.password);
         }
-        const result = await this.$api.systemManage[url](params);
+        const res = await this.$api.systemManage[url](params);
         this.$refs.dialog.loadingClose();
-        if (!!result && result.status === 200) {
+        if (!!res && res.status === 200) {
           this.editUserData.nodeId = null;
           this.$message.success(this.editUserData.type === 'edit' ? '编辑用户成功' : '增加用户成功');
           this.refreshTableData();
         } else {
-          this.$message.error(result.message);
+          this.$message.error(res.message);
         }
       });
     }
   },
   created() {
     this.table.column = [
-      {label: '创建时间', props: 'created', align: 'left', filter: 'formatDate', funcParam: [], width: 150},
-      {label: '用户名', props: 'username', align: 'center'},
-      {label: '用户类型', props: 'role', align: 'center'},
-      {label: '描述', props: 'description', align: 'left'},
-      {label: '最近登录时间', props: 'lastLogin', align: 'center', filter: 'formatDate', funcParam: [], width: 150}
+      {label: '创建时间', prop: 'created', filter: 'formatDate', funcParam: [], width: 150},
+      {label: '用户名', prop: 'username'},
+      {label: '用户类型', prop: 'role', align: 'center'},
+      {label: '描述', prop: 'description'},
+      {label: '最近登录时间', prop: 'lastLogin', filter: 'formatDate', funcParam: [], width: 150}
     ];
     this.getTableData();
   }
@@ -274,12 +271,5 @@ export default {
 </script>
 
 <style scoped lang="less">
-  .el-button--default {
-    color: @background-color-base !important;
-    background-color: @color-text-regular !important;
-    &:hover {
-      color: @color-text-primary !important;
-      background-color: @color-primary !important;
-    }
-  }
+
 </style>

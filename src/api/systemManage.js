@@ -1,7 +1,8 @@
 import * as ajax from '@/utils/request';
 export default {
-  addUser: params => ajax.post('/addUser', params, {contentType: 'application/json'}),
-  editUser: params => ajax.get('/editUser', params),
-  delUser: params => ajax.del('/delUser', params),
-  userList: params => ajax.post('/user/queryPage', params)
+  addUser: params => ajax.post('/user/create', params),
+  editUser: params => ajax.put('/user/update', params),
+  delUser: params => ajax.del(`/user/delete/${params}`),
+  getUser: params => ajax.post('/user/queryPage', params),
+  checkUser: params => ajax.get(`/user/queryByUsername/${params}`)
 };

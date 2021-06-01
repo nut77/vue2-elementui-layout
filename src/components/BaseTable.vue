@@ -1,5 +1,5 @@
 <template>
-  <div class="full">
+  <div class="wfull table-container">
     <template v-if="!!table && !!table.column.length">
       <el-table
         v-loading="table.isLoading"
@@ -79,3 +79,9 @@ export default {
   }
 };
 </script>
+
+<style scoped lang="less">
+  .table-container {
+    height: calc(100% - 100px);
+  }
+</style>
