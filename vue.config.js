@@ -29,7 +29,7 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:8090/api',
+        target: 'http://api.ifbes.com/mock/20/api',
         pathRewrite: {
           '^/api': ''
         }

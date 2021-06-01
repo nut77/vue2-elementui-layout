@@ -89,7 +89,7 @@ export default {
         if (!!res && res.status === 200) {
           localStorage.setItem('token', res.data.token);
           this.$store.commit('setUserInfo', res.data);
-          this.$router.push('/task-center');
+          this.$router.push('/home');
         } else {
           this.msg = res.message;
         }

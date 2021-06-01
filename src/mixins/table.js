@@ -38,6 +38,7 @@ export default {
     sortChange({column, prop, order}) {
       this.table.orderField = prop;
       this.table.orderBy = order === 'ascending' ? 'ASC' : 'DESC';
+      this.pagination.current = 1;
       this.getTableData();
     },
     // 搜索、新增、删除 表格数据时调用
@@ -125,12 +126,6 @@ export default {
           ajax.send(str);
         }
       }
-    },
-    // 拼接get参数
-    getDownLoadParam(obj) {
-      delete obj.currentPage;
-      delete obj.pageSize;
-      return obj;
     }
   }
 };

@@ -41,7 +41,7 @@ function getMenuItemConfig(index, name, path, componentPath, config = {}, childr
       hasWrapperSubNav: true,
       isNav: true,
       iconClass: '',
-      authority: ['普通用户']
+      authority: ['管理员', '普通用户']
     }, config)
   };
   !config.fullPath && (menuItemConfig.meta.fullPath = path);
