@@ -5,8 +5,8 @@
     </div>
     <div class="system-table">
       <base-table
-        :pagingData="pagingData"
-        :tableData="tableData"
+        :pagination="pagination"
+        :table="table"
         @sizeChange="(val, type) => pagingEvent(val, type)"
         @currentChange="(val, type) => pagingEvent(val, type)">
         <template columnType>
@@ -193,11 +193,11 @@ export default {
   methods: {
     async getTableData() {
       this.isLoading = true;
-      const result = await this.$api.systemManage.getUser(this.getPageParams());
+      const result = await this.$api.systemManage.userList(this.getPageParams());
       this.isLoading = false;
       if (!!result && result.status === 200) {
-        this.tableData.data = (result.data || {data: []}).data;
-        this.pagingData.total = (result.data || {total: []}).total;
+        this.table.data = (result.data || {data: []}).data;
+        this.pagination.total = (result.data || {total: []}).total;
       } else {
         this.msg = result.message;
       }
@@ -261,7 +261,7 @@ export default {
     }
   },
   created() {
-    this.tableData.column = [
+    this.table.column = [
       {label: '创建时间', props: 'created', align: 'left', filter: 'formatDate', funcParam: [], width: 150},
       {label: '用户名', props: 'username', align: 'center'},
       {label: '用户类型', props: 'role', align: 'center'},

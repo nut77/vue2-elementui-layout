@@ -156,6 +156,7 @@ export default {
     align-items: center;
     min-height: 600px;
     height: 100%;
+    background-color: @background-color-darker;
   }
   .login-box {
     width: 645px;

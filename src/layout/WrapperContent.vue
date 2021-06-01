@@ -12,9 +12,6 @@ export default {
 
 <style lang="less" scoped>
   .el-main {
-    background-color: #E9EEF3;
-    color: #333;
-    text-align: center;
-    line-height: 160px;
+    background-color: @background-color-base-opacity;
   }
 </style>

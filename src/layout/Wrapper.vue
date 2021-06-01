@@ -14,9 +14,9 @@
         :path="path"
         :isCollapse="isCollapse">
       </wrapper-left>
-      <wrapper-content></wrapper-content>
+      <wrapper-content :class="wrapperContentClass"></wrapper-content>
     </el-container>
-    <wrapper-content v-else></wrapper-content>
+    <wrapper-content v-else :class="wrapperContentClass"></wrapper-content>
   </el-container>
 </template>
 
@@ -48,6 +48,11 @@ export default {
     },
     isOnlyNavLeft() {
       return this.$store.state.isOnlyNavLeft;
+    },
+    wrapperContentClass() {
+      if (!this.hasWrapperTop && !this.hasWrapperLeft) return 'pd0';
+      if (!this.hasWrapperLeft) return 'pd30';
+      return 'pd20';
     }
   },
   methods: {

@@ -141,7 +141,6 @@ export default {
     display: flex;
     height: 60px;
     background-color: @background-color-darker;
-    color: #333;
     line-height: 60px;
   }
   .el-header-title {

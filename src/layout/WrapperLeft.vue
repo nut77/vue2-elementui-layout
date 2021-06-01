@@ -1,5 +1,5 @@
 <template>
-  <el-aside :style="{width: `${isCollapse ? 63 : 220}px !important`}">
+  <el-aside :style="{width: `${isCollapse ? 63 : 240}px !important`}">
     <el-menu
       :collapse="isCollapse"
       :router="true"
@@ -34,8 +34,7 @@ export default {
 
 <style lang="less" scoped>
   .el-aside {
-    background-color: #D3DCE6;
-    color: #333;
+    background-color: @background-color-base;
     text-align: center;
     line-height: 200px;
   }
