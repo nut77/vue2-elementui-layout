@@ -104,6 +104,8 @@ export default {
   watch: {
     $route(toRoute) {
       this.initLayout(toRoute);
+      // 若当前页面被内嵌则修改浏览器访问地址为实际访问地址
+      (window.self !== window.top) && (top.location.href = window.location.href);
     }
   },
   created() {
