@@ -19,7 +19,7 @@
         <img class="mgr5" :src="userSrc" height="24" width="24"/>
         {{username}}
       </div>
-      <el-dropdown-menu class="el-header-dropdown-menu" slot="dropdown">
+      <el-dropdown-menu class="el-header-dropdown-menu" #dropdown>
         <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
         <el-dropdown-item command="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
@@ -44,7 +44,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <template slot="dialogFooter">
+      <template #dialogFooter>
         <el-button type="primary" @click="handleChangePassword">确 定</el-button>
         <el-button type="info" @click="hideDialog">取 消</el-button>
       </template>

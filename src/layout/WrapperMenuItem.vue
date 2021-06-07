@@ -5,13 +5,13 @@
         v-if="!item.children || (item.children && !isRecursive)"
         :index="item.meta.fullPath"
         :key="item.meta.fullPath">
-        <template slot="title">
+        <template #title>
           <i class="el-icon-eleme"></i>
           <span>{{item.name}}</span>
         </template>
       </el-menu-item>
       <el-submenu v-else :key="item.meta.fullPath" :index="item.meta.fullPath">
-        <template slot="title">
+        <template #title>
           <i class="el-icon-eleme"></i>
           <span>{{item.name}}</span>
         </template>

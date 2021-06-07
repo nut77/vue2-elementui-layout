@@ -23,7 +23,6 @@ async function validator(rule, value, callback, handler = null) {
   // 必填且无值 提示为空，不继续验证
   if (rule.required && isValueEmpty) {
     const msg = rule.message ? rule.message : `请输入${rule.fieldType || ''}`;
-    debugger;
     callback(new Error(msg));
     return false;
   }

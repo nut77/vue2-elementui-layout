@@ -9,11 +9,11 @@
     :append-to-body="true"
     @closed="$emit('dialogClose')"
     custom-class="base-dialog-container">
-    <template slot="title">
+    <template #title>
       <base-text :content="title" class="el-dialog__title"></base-text>
     </template>
     <slot></slot>
-    <template slot="footer">
+    <template #footer>
       <slot name="dialogFooter"></slot>
     </template>
   </el-dialog>

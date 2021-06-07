@@ -3,12 +3,13 @@
     <div class="mgb20">
       <el-button type="primary" @click="editEvidenceEvt('add')">新建用户</el-button>
     </div>
+
     <base-table
       :pagination="pagination"
       :table="table"
       @sizeChange="(val, type) => pagingEvent(val, type)"
       @currentChange="(val, type) => pagingEvent(val, type)">
-      <template columnType>
+      <template #columnType>
         <el-table-column type="index" width="80" label="序号" align="center"></el-table-column>
       </template>
       <template #operator>
@@ -18,14 +19,14 @@
           :min-width="100"
           :show-overflow-tooltip="true"
           align="center">
-          <template slot-scope="scope">
+          <template #default="{row}">
             <el-button
               title="编辑"
               type="primary"
               size="small"
               class="table-operator table-edit"
-              :disabled="scope.row.username === 'admin'"
-              @click="editEvidenceEvt('edit', scope.row)">
+              :disabled="row.username === 'admin'"
+              @click="editEvidenceEvt('edit', row)">
               编辑
             </el-button>
             <el-button
@@ -33,8 +34,8 @@
               type="danger"
               size="small"
               class="table-operator table-delete"
-              :disabled="scope.row.username === 'admin'"
-              @click="OperatorEvt('delete', scope.row)">
+              :disabled="row.username === 'admin'"
+              @click="OperatorEvt('delete', row)">
               删除
             </el-button>
           </template>
@@ -100,7 +101,7 @@
           </el-form-item>
         </el-form>
       </div>
-      <template slot="dialogFooter">
+      <template #dialogFooter>
         <el-button type="primary" @click="submitFormEvt">确 定</el-button>
         <el-button type="info" @click="editUserData.nodeId = null">取 消</el-button>
       </template>
@@ -113,7 +114,7 @@
       :nodeId="operatorData.nodeId"
       @dialogClose="hideDialog">
       <p class="base-dialog-tip">{{operatorData.text}}</p>
-      <template slot="dialogFooter">
+      <template #dialogFooter>
         <el-button type="primary" @click="submitOperatorEvt">确 定</el-button>
         <el-button type="info" @click="operatorData.nodeId = null">取 消</el-button>
       </template>

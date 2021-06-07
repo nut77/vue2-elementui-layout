@@ -6,7 +6,7 @@
         class="wfull"
         :data="table.data"
         stripe
-        :style="{'height': hasPagination ? `calc(100% - 50px)` : '100%'}"
+        :height="hasPagination ? 'calc(100% - 50px)' : '100%'"
         :default-sort="table.defaultSort"
         @sort-change="$emit('sortChange', $event)"
         @selection-change="$emit('tableSelection', $event)">
@@ -21,10 +21,10 @@
             :align="item.align || 'left'"
             :sort-orders="table.sortOrders"
             :sortable="item.sortable ? 'custom' : false">
-            <template slot-scope="scope">
+            <template #default="{row}">
               <span
                 class="table-value"
-                v-html="$options.filters[item.filter || 'transformNull'](scope.row[item.prop], ...item.arguments)">
+                v-html="$options.filters[item.filter || 'transformNull'](row[item.prop], ...item.arguments)">
               </span>
             </template>
           </el-table-column>
@@ -44,7 +44,7 @@
         :page-sizes="pagination.sizes"
         :page-size="pagination.size"
         :total="pagination.total"
-        style="float: right;"
+        class="fr mgt20"
         layout="total, sizes, prev, pager, next, jumper">
       </el-pagination>
     </template>
@@ -82,6 +82,6 @@ export default {
 
 <style scoped lang="less">
   .table-container {
-    height: calc(100% - 100px);
+    height: calc(100% - 60px);
   }
 </style>
