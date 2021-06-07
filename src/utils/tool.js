@@ -694,7 +694,7 @@ const numberWithCommas = (x) => {
 
 /**
  * 取小数
- * @param {number|string} val 目标数据
+ * @param {number|string} val - 目标数据
  * @param {number} [fixedLen=2] - 保留小数长度，默认保留2位
  * @param {boolean} [isCeil=true] - 是否四舍五入
  * @return {string}
@@ -712,9 +712,31 @@ const numberFixed = (val, fixedLen = 2, isCeil = true) => {
   return str;
 };
 
-// 获取完整的请求地址
+/**
+ * 获取完整的（接口）请求地址
+ * @param {string} url - 接口地址，以'/'开头的接口地址
+ * @param {string} [base='VUE_APP_AXIOS_BASE_URL'] - 环境变量名，指代代理地址
+ * @return {string}
+ */
 const getFullUrl = (url, base = 'VUE_APP_AXIOS_BASE_URL') => {
   return (process.env[base] || '/api') + url;
+};
+
+/**
+ * 过滤字符串输入输出，将部分字符转换为字符实体，避免XSS攻击（URL请用 encodeURI() encodeURIComponent()来处理）
+ * @param {string} str - 需要过滤的字符串
+ * @return {string}
+ */
+const escape = (str) => {
+  const htmlEscapes = {
+    '&': '&amp',
+    '<': '&lt',
+    '>': '&gt',
+    '"': '&quot',
+    "'": '&#39'
+  };
+  const reg = /[&<>"']/g;
+  return (str && reg.test(str)) ? str.replace(reg, chr => htmlEscapes[chr]) : str;
 };
 
 export default {
@@ -747,5 +769,6 @@ export default {
   getParentNodeByClass,
   numberWithCommas,
   numberFixed,
-  getFullUrl
+  getFullUrl,
+  escape
 };
