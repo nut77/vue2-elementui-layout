@@ -129,7 +129,7 @@ export default {
   name: 'User',
   mixins: [mixins.table, mixins.dialog],
   data() {
-    const editUserFormDefault = {
+    const userFormDefault = {
       id: '',
       username: '',
       password: '',
@@ -139,6 +139,15 @@ export default {
     };
     return {
       isLoading: true,
+      table: {
+        column: [
+          {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150},
+          {label: '用户名', prop: 'username'},
+          {label: '用户类型', prop: 'role', align: 'center'},
+          {label: '描述', prop: 'description'},
+          {label: '最近登录时间', prop: 'lastLogin', filter: 'formatDate', arguments: [], width: 150}
+        ]
+      },
       isResetPassword: false,
       operatorData: {
         title: '',
@@ -149,8 +158,8 @@ export default {
       editUserData: {
         nodeId: null,
         type: '',
-        editUserForm: {...editUserFormDefault},
-        editUserFormDefault,
+        editUserForm: {...userFormDefault},
+        userFormDefault,
         editUserFormRule: {
           username: [{required: true, validator: this.$validator.userName, isEdit: false}],
           password: [
@@ -205,7 +214,7 @@ export default {
       if (this.$refs.editUserForm !== undefined) {
         this.$refs.editUserForm.resetFields();
       }
-      Object.assign(this.editUserData.editUserForm, this.editUserData.editUserFormDefault);
+      Object.assign(this.editUserData.editUserForm, this.editUserData.userFormDefault);
       if (type === 'edit') {
         this.$tool.setObject(this.editUserData.editUserForm, row);
         this.editUserData.editUserForm.password = '';
@@ -259,13 +268,6 @@ export default {
     }
   },
   created() {
-    this.table.column = [
-      {label: '创建时间', prop: 'created', filter: 'formatDate', funcParam: [], width: 150},
-      {label: '用户名', prop: 'username'},
-      {label: '用户类型', prop: 'role', align: 'center'},
-      {label: '描述', prop: 'description'},
-      {label: '最近登录时间', prop: 'lastLogin', filter: 'formatDate', funcParam: [], width: 150}
-    ];
     this.getTableData();
   }
 };
