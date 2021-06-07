@@ -20,8 +20,8 @@
         {{username}}
       </div>
       <el-dropdown-menu class="el-header-dropdown-menu" slot="dropdown">
-        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
         <el-dropdown-item command="changePassword">修改密码</el-dropdown-item>
+        <el-dropdown-item command="logout">退出登录</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
 

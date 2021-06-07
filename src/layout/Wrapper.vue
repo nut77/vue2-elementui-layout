@@ -36,7 +36,12 @@ export default {
       menuLeftKey: Date.now(),
       isEnableSetMenuLeft: true,
       isCollapse: false,
-      path: ['/home']
+      path: ['/home'],
+      operationTime: {
+        action: ['mousemove', 'keyup', 'click'],
+        timeoutInterval: 10 * 60 * 1000,
+        timeId: 0
+      }
     };
   },
   computed: {
@@ -88,6 +93,12 @@ export default {
       this.refreshWrapper(route);
       this.setPath(route);
       (this.isEnableSetMenuLeft || !this.menuLeft.length) && this.setMenuLeft(route);
+    },
+    updateOperationTime() {
+      if (this.operationTime.timeId) clearTimeout(this.operationTime.timeId);
+      this.operationTime.timeId = setTimeout(() => {
+        if (location.pathname !== '/login') this.logout();
+      }, this.operationTime.timeoutInterval);
     }
   },
   watch: {
@@ -98,6 +109,11 @@ export default {
   created() {
     this.routes = this.$router.options.routes;
     this.initLayout();
+    this.updateOperationTime();
+    this.operationTime.action.map(type => document.addEventListener(type, this.updateOperationTime));
+  },
+  destroyed() {
+    this.operationTime.action.map(type => document.removeEventListener(type, this.updateOperationTime));
   }
 };
 </script>
