@@ -723,20 +723,21 @@ const getFullUrl = (url, base = 'VUE_APP_AXIOS_BASE_URL') => {
 };
 
 /**
- * 过滤字符串输入输出，将部分字符转换为字符实体，避免XSS攻击（URL请用 encodeURI() encodeURIComponent()来处理）
+ * 简单过滤字符串输入输出，将部分字符转换为字符实体，避免XSS攻击（URL请用 encodeURI() encodeURIComponent()来处理）
  * @param {string} str - 需要过滤的字符串
  * @return {string}
  */
-const escape = (str) => {
-  const htmlEscapes = {
-    '&': '&amp',
-    '<': '&lt',
-    '>': '&gt',
-    '"': '&quot',
-    "'": '&#39'
+const escapeStr = (str) => {
+  const signs = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#39;',
+    '/': '&#x2F;'
   };
-  const reg = /[&<>"']/g;
-  return (str && reg.test(str)) ? str.replace(reg, chr => htmlEscapes[chr]) : str;
+  const reg = /[&<>"'/]/g;
+  return (str && reg.test(str)) ? str.replace(reg, chr => signs[chr]) : str;
 };
 
 export default {
@@ -770,5 +771,5 @@ export default {
   numberWithCommas,
   numberFixed,
   getFullUrl,
-  escape
+  escapeStr
 };

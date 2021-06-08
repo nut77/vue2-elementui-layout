@@ -1,7 +1,7 @@
 <template>
   <div v-loading="isLoading">
     <div class="mgb20">
-      <el-button type="primary" @click="editEvidenceEvt('add')">新建用户</el-button>
+      <el-button type="primary" @click="handleDialogShowUser('add')">新建用户</el-button>
     </div>
 
     <base-table
@@ -13,29 +13,20 @@
         <el-table-column type="index" width="80" label="序号" align="center"></el-table-column>
       </template>
       <template #operator>
-        <el-table-column
-          label="操作"
-          prop="taskName"
-          :min-width="100"
-          :show-overflow-tooltip="true"
-          align="center">
+        <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
             <el-button
-              title="编辑"
               type="primary"
               size="small"
-              class="table-operator table-edit"
               :disabled="row.username === 'admin'"
-              @click="editEvidenceEvt('edit', row)">
+              @click="handleDialogShowUser('edit', row)">
               编辑
             </el-button>
             <el-button
-              title="删除"
               type="danger"
               size="small"
-              class="table-operator table-delete"
               :disabled="row.username === 'admin'"
-              @click="OperatorEvt('delete', row)">
+              @click="handleDialogShowConfirm('delete', row)">
               删除
             </el-button>
           </template>
@@ -45,45 +36,41 @@
 
     <!--添加/编辑用户-->
     <base-dialog
-      ref="dialog"
-      :title="`${editUserData.type === 'edit' ? '修改' : '新增'}用户`"
-      :nodeId="editUserData.nodeId"
-      @dialogClose="editUserData.nodeId = null">
+      ref="dialogUser"
+      :title="`${dialog.user.type === 'edit' ? '修改' : '新增'}用户`"
+      :nodeId="dialog.user.nodeId"
+      @dialogConfirm="submitDialogUser"
+      @dialogClose="dialog.user.nodeId = 0">
       <div class="container">
-        <el-form
-          :model="editUserData.editUserForm"
-          :rules="editUserData.editUserFormRule"
-          ref="editUserForm"
-          label-width="80px"
-          required>
+        <el-form :model="formData" :rules="formRules" ref="userForm" label-width="80px">
           <el-form-item label="用户名" prop="username">
             <el-input
               maxlength=20
               placeholder="请输入用户名"
-              v-model.trim="editUserData.editUserForm.username"
+              v-model.trim="formData.username"
               clearable
-              :disabled="editUserData.type === 'edit'"
+              :disabled="dialog.user.type === 'edit'"
               onpaste="return false">
             </el-input>
           </el-form-item>
           <el-form-item label="密码" prop="password" :required="isPasswordRequired">
             <el-input
-              v-if="editUserData.type === 'add' || isResetPassword"
+              v-if="dialog.user.type === 'add' || isResetPassword"
               maxlength=20
               type="password"
               placeholder="请输入密码"
-              v-model.trim="editUserData.editUserForm.password"
+              v-model.trim="formData.password"
               clearable
               onpaste="return false">
             </el-input>
             <el-button v-else @click="isResetPassword = true">重置</el-button>
           </el-form-item>
-          <el-form-item v-if="editUserData.type === 'add' || isResetPassword" label="确认密码" prop="repeatPassword">
+          <el-form-item v-if="dialog.user.type === 'add' || isResetPassword" label="确认密码" prop="repeatPassword">
             <el-input
               maxlength=20
               type="password"
               placeholder="请再次输入密码"
-              v-model.trim="editUserData.editUserForm.repeatPassword"
+              v-model.trim="formData.repeatPassword"
               clearable
               onpaste="return false">
             </el-input>
@@ -96,28 +83,21 @@
               type="textarea"
               maxlength=250
               placeholder="请输入描述"
-              v-model.trim="editUserData.editUserForm.description">
+              v-model.trim="formData.description">
             </el-input>
           </el-form-item>
         </el-form>
       </div>
-      <template #dialogFooter>
-        <el-button type="primary" @click="submitFormEvt">确 定</el-button>
-        <el-button type="info" @click="editUserData.nodeId = null">取 消</el-button>
-      </template>
     </base-dialog>
 
     <!--弹框-->
     <base-dialog
-      ref="delDialog"
-      :title="operatorData.title"
-      :nodeId="operatorData.nodeId"
-      @dialogClose="hideDialog">
-      <p class="base-dialog-tip">{{operatorData.text}}</p>
-      <template #dialogFooter>
-        <el-button type="primary" @click="submitOperatorEvt">确 定</el-button>
-        <el-button type="info" @click="operatorData.nodeId = null">取 消</el-button>
-      </template>
+      ref="dialogConfirm"
+      :title="dialog.confirm.title"
+      :nodeId="dialog.confirm.nodeId"
+      @dialogConfirm="submitDialogConfirm"
+      @dialogClose="dialog.confirm.nodeId = 0">
+      <p class="base-dialog-tooltip">{{dialog.confirm.tooltip}}</p>
     </base-dialog>
   </div>
 </template>
@@ -149,52 +129,54 @@ export default {
         ]
       },
       isResetPassword: false,
-      operatorData: {
-        title: '',
-        nodeId: null,
-        text: '',
-        requestParams: []
+      dialog: {
+        user: {
+          nodeId: 0,
+          type: 'add'
+        },
+        confirm: {
+          nodeId: 0,
+          title: '',
+          tooltip: '',
+          requestParams: []
+        }
       },
-      editUserData: {
-        nodeId: null,
-        type: '',
-        editUserForm: {...userFormDefault},
-        userFormDefault,
-        editUserFormRule: {
-          username: [{required: true, validator: this.$validator.userName, isEdit: false}],
-          password: [
-            {
-              trigger: 'change',
-              validator: (rule, value, callback) => {
-                // 避免清除表单项后，错误提示是英文
-                this.isPasswordRequired && !value ? callback(new Error('请输入密码')) : callback();
-              }
-            },
-            {
-              trigger: 'blur',
-              passwordType: '密码',
-              validator: (rule, value, callback) => {
-                rule.required = this.isPasswordRequired;
-                this.$validator.password(rule, value, callback);
-              }
-            }
-          ],
-          repeatPassword: [{
-            required: true,
-            trigger: 'blur',
-            passwordType: '确认密码',
+      userFormDefault,
+      formData: {...userFormDefault},
+      formRules: {
+        username: [{required: true, validator: this.$validator.userName, isEdit: false}],
+        password: [
+          {
+            trigger: 'change',
             validator: (rule, value, callback) => {
-              rule.newPassword = this.editUserData.editUserForm.password;
+              // 避免清除表单项后，错误提示是英文
+              this.isPasswordRequired && !value ? callback(new Error('请输入密码')) : callback();
+            }
+          },
+          {
+            trigger: 'blur',
+            passwordType: '密码',
+            validator: (rule, value, callback) => {
+              rule.required = this.isPasswordRequired;
               this.$validator.password(rule, value, callback);
             }
-          }]
-        }
+          }
+        ],
+        repeatPassword: [{
+          required: true,
+          trigger: 'blur',
+          passwordType: '确认密码',
+          validator: (rule, value, callback) => {
+            rule.newPassword = this.formData.password;
+            this.$validator.password(rule, value, callback);
+          }
+        }]
       }
     };
   },
   computed: {
     isPasswordRequired() {
-      return !(this.editUserData.editUserForm.id && !this.isResetPassword);
+      return !(this.formData.id && !this.isResetPassword);
     }
   },
   methods: {
@@ -209,57 +191,61 @@ export default {
         this.$message.error(res.message);
       }
     },
-    editEvidenceEvt(type, row) {
+    // type: add/edit
+    handleDialogShowUser(type, row) {
       this.isResetPassword = false;
-      if (this.$refs.editUserForm !== undefined) {
-        this.$refs.editUserForm.resetFields();
+      if (this.$refs.userForm !== undefined) {
+        this.$refs.userForm.resetFields();
       }
-      Object.assign(this.editUserData.editUserForm, this.editUserData.userFormDefault);
+      Object.assign(this.formData, this.userFormDefault);
       if (type === 'edit') {
-        this.$tool.setObject(this.editUserData.editUserForm, row);
-        this.editUserData.editUserForm.password = '';
+        this.$tool.setObject(this.formData, row);
+        this.formData.password = '';
       }
-      this.editUserData.type = type;
-      this.editUserData.editUserFormRule.username[0].isEdit = this.editUserData.type === 'edit';
-      this.editUserData.nodeId = +new Date();
+      this.dialog.user.type = type;
+      this.formRules.username[0].isEdit = this.dialog.user.type === 'edit';
+      this.dialog.user.nodeId = Date.now();
     },
-    OperatorEvt(type, row) {
-      this.operatorData.title = '确认删除';
-      this.operatorData.text = '确认删除该用户？';
-      this.operatorData.requestParams = row.id;
-      this.operatorData.nodeId = Date.now();
+    // type: delete
+    handleDialogShowConfirm(type, row) {
+      Object.assign(this.dialog.confirm, {
+        nodeId: Date.now(),
+        title: '确认删除',
+        tooltip: '确认删除该用户？',
+        requestParams: row.id
+      });
     },
-    async submitOperatorEvt() {
-      this.$refs.delDialog.loadingOpen();
-      const res = await this.$api.systemManage.delUser(this.operatorData.requestParams);
-      this.$refs.delDialog.loadingClose();
+    async submitDialogConfirm() {
+      this.$refs.dialogConfirm.loadingOpen();
+      const res = await this.$api.systemManage.delUser(this.dialog.requestParams);
+      this.$refs.dialogConfirm.loadingClose();
       if (!!res && res.status === 200) {
-        this.operatorData.nodeId = null;
+        this.dialog.confirm.nodeId = 0;
         this.$message.success('删除用户成功');
         this.refreshTableData();
       } else {
         this.$message.error(res.message);
       }
     },
-    submitFormEvt() {
-      this.$refs.editUserForm.validate(async valid => {
+    submitDialogUser() {
+      this.$refs.userForm.validate(async valid => {
         if (!valid) return;
-        this.$refs.dialog.loadingOpen();
-        const url = this.editUserData.type === 'edit' ? 'editUser' : 'addUser';
+        this.$refs.dialogUser.loadingOpen();
+        const url = this.dialog.user.type === 'edit' ? 'editUser' : 'addUser';
         const params = {
-          username: this.editUserData.editUserForm.username,
-          role: this.editUserData.editUserForm.role,
-          description: this.editUserData.editUserForm.description,
-          id: this.editUserData.type === 'add' ? '' : this.editUserData.editUserForm.id
+          username: this.formData.username,
+          role: this.formData.role,
+          description: this.formData.description,
+          id: this.dialog.user.type === 'add' ? '' : this.formData.id
         };
         if (this.isPasswordRequired) {
-          params.password = SHA256.hmac(this.editUserData.editUserForm.username, this.editUserData.editUserForm.password);
+          params.password = SHA256.hmac(this.formData.username, this.formData.password);
         }
         const res = await this.$api.systemManage[url](params);
-        this.$refs.dialog.loadingClose();
+        this.$refs.dialogUser.loadingClose();
         if (!!res && res.status === 200) {
-          this.editUserData.nodeId = null;
-          this.$message.success(this.editUserData.type === 'edit' ? '编辑用户成功' : '增加用户成功');
+          this.dialog.user.nodeId = 0;
+          this.$message.success(this.dialog.user.type === 'edit' ? '编辑用户成功' : '增加用户成功');
           this.refreshTableData();
         } else {
           this.$message.error(res.message);

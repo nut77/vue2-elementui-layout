@@ -3,7 +3,7 @@
     :center="true"
     :loading="isLoading"
     :width="width"
-    :visible.sync="show"
+    :visible.sync="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     :append-to-body="true"
@@ -13,7 +13,11 @@
       <base-text :content="title" class="el-dialog__title"></base-text>
     </template>
     <slot></slot>
-    <template #footer>
+    <template v-if="hasFooter" #footer>
+      <el-button type="primary" @click="$emit('dialogConfirm')">确 定</el-button>
+      <el-button type="info" @click="visible = false">取 消</el-button>
+    </template>
+    <template v-else #footer>
       <slot name="dialogFooter"></slot>
     </template>
   </el-dialog>
@@ -36,11 +40,15 @@ export default {
     nodeId: {
       type: Number,
       default: 0
+    },
+    hasFooter: {
+      type: Boolean,
+      default: true
     }
   },
   data() {
     return {
-      show: false,
+      visible: false,
       isLoading: false
     };
   },
@@ -54,7 +62,7 @@ export default {
   },
   watch: {
     nodeId(val) {
-      this.show = !!val;
+      this.visible = !!val;
     }
   }
 };

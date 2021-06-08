@@ -22,10 +22,7 @@
             :sort-orders="table.sortOrders"
             :sortable="item.sortable ? 'custom' : false">
             <template #default="{row}">
-              <span
-                class="table-value"
-                v-html="$options.filters[item.filter || 'transformNull'](row[item.prop], ...item.arguments)">
-              </span>
+              <span class="table-value" v-html="$options.filters[item.filter || 'transformNull'](row[item.prop], ...item.arguments)"/>
             </template>
           </el-table-column>
         </template>
