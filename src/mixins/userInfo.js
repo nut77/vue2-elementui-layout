@@ -12,7 +12,7 @@ export default {
       msg && this.$message[type](msg);
       this.$store.commit('resetUserInfo');
       localStorage.clear();
-      this.$router.push('/login');
+      location.replace('/login');
     }
   }
 };

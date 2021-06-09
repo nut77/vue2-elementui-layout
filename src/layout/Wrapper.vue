@@ -98,6 +98,7 @@ export default {
       if (this.operationTime.timeId) clearTimeout(this.operationTime.timeId);
       this.operationTime.timeId = setTimeout(() => {
         if (location.pathname !== '/login') this.logout();
+        this.operationTime.timeId = 0;
       }, this.operationTime.timeoutInterval);
     }
   },

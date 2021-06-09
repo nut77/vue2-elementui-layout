@@ -99,7 +99,7 @@ const request = async (options = {}) => {
     location.pathname !== '/login' && (res.message = MESSAGE.PERMISSION_DENIED);
     localStorage.clear();
     store.commit('resetUserInfo');
-    location.pathname = '/login';
+    location.replace('/login');
     return res;
   }
   if (res.status >= 500 && res.status !== 502) res.message = MESSAGE.NETWORK_ERR;
