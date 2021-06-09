@@ -39,7 +39,7 @@ export default {
       path: ['/home'],
       operationTime: {
         action: ['mousemove', 'keyup', 'click'],
-        timeoutInterval: 10 * 60 * 1000,
+        timeoutInterval: process.env.VUE_APP_TIMEOUT_INTERVAL * 60 * 1000,
         timeId: 0
       }
     };

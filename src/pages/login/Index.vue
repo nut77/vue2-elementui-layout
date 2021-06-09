@@ -89,6 +89,7 @@ export default {
         if (!!res && res.status === 200) {
           localStorage.setItem('token', res.data.token);
           this.$store.commit('setUserInfo', res.data);
+          this.$store.commit('setTimeToGetToken', res.data);
           this.$router.push('/home');
         } else {
           this.msg = res.message;

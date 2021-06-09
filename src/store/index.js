@@ -18,6 +18,7 @@ const state = {
   // 是否只有左侧导航
   isOnlyNavLeft: false,
   userInfo: {...userInfoInit},
+  timeToGetToken: 0,
   systemInfo: {
     name: process.env.VUE_APP_SYSTEM_NAME,
     version: process.env.VUE_APP_SYSTEM_VERSION
@@ -33,6 +34,12 @@ const getters = {
 const mutations = {
   setUserInfo(state, data) {
     Object.assign(state.userInfo, data);
+  },
+  setToken(state, data) {
+    state.userInfo.token = data;
+  },
+  setTimeToGetToken(state) {
+    state.timeToGetToken = Date.now();
   },
   resetUserInfo(state) {
     Object.assign(state.userInfo, userInfoInit);

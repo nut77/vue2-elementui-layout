@@ -114,11 +114,23 @@ const request = async (options = {}) => {
  * @param {Object} [config] - 请求的额外配置项，如：contentType, headers, onUploadProgress等
  * @return {Promise} 返回请求结果
  */
-const ajax = (method = 'get', url, params = {}, config = {}) => {
+const REFRESH_TOKEN_INTERVAL = process.env.VUE_APP_REFRESH_TOKEN_INTERVAL;
+let isRefreshing = false;
+const ajax = async (method = 'get', url, params = {}, config = {}) => {
   const options = Object.assign({}, config);
   options[/get|delete/.test(method) ? 'params' : 'data'] = params;
   options.method = method;
   options.url = url;
+
+  // 刷新token
+  const filterReg = /login|logout|refresh/;
+  if (Date.now() - REFRESH_TOKEN_INTERVAL * 60 * 1000 > store.state.timeToGetToken && !filterReg.test(config.url) && !isRefreshing) {
+    isRefreshing = true;
+    const res = await get('/auth/refresh');
+    isRefreshing = false;
+    store.commit('setToken', res.data);
+    store.commit('setTimeToGetToken');
+  }
   return request(options);
 };
 const get = (url, params = {}, config = {}) => ajax('get', url, params, config);
