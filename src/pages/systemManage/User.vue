@@ -1,5 +1,5 @@
 <template>
-  <div v-loading="isLoading">
+  <div>
     <div class="mgb20">
       <el-button type="primary" @click="handleDialogShowUser('add')">新建用户</el-button>
     </div>
@@ -7,9 +7,12 @@
     <base-table
       :pagination="pagination"
       :table="table"
-      @sizeChange="(val, type) => pagingEvent(val, type)"
-      @currentChange="(val, type) => pagingEvent(val, type)">
+      @sortChange="handleSortChange"
+      @selectionChange="handleSelectionChange"
+      @sizeChange="handlePaging"
+      @currentChange="handlePaging">
       <template #columnType>
+        <el-table-column type="selection" width="80" align="center"></el-table-column>
         <el-table-column type="index" width="80" label="序号" align="center"></el-table-column>
       </template>
       <template #operator>
@@ -37,7 +40,7 @@
     <!--添加/编辑用户-->
     <base-dialog
       ref="dialogUser"
-      :title="`${dialog.user.type === 'edit' ? '修改' : '新增'}用户`"
+      :title="`${dialog.user.type === 'edit' ? '编辑' : '新增'}用户`"
       :nodeId="dialog.user.nodeId"
       @dialogConfirm="submitDialogUser"
       @dialogClose="dialog.user.nodeId = 0">
@@ -122,7 +125,7 @@ export default {
       table: {
         column: [
           {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150},
-          {label: '用户名', prop: 'username'},
+          {label: '用户名', prop: 'username', sortable: true},
           {label: '用户类型', prop: 'role', align: 'center'},
           {label: '描述', prop: 'description'},
           {label: '最近登录时间', prop: 'lastLogin', filter: 'formatDate', arguments: [], width: 150}
@@ -180,16 +183,8 @@ export default {
     }
   },
   methods: {
-    async getTableData() {
-      this.isLoading = true;
-      const res = await this.$api.systemManage.getUser(this.getPageParams());
-      this.isLoading = false;
-      if (!!res && res.status === 200) {
-        this.table.data = (res.data || {data: []}).data;
-        this.pagination.total = (res.data || {total: []}).total;
-      } else {
-        this.$message.error(res.message);
-      }
+    getTableData() {
+      this.setTableData('systemManage', 'getUser', this.getTableRequestParams());
     },
     // type: add/edit
     handleDialogShowUser(type, row) {
@@ -231,7 +226,6 @@ export default {
       this.$refs.userForm.validate(async valid => {
         if (!valid) return;
         this.$refs.dialogUser.loadingOpen();
-        const url = this.dialog.user.type === 'edit' ? 'editUser' : 'addUser';
         const params = {
           username: this.formData.username,
           role: this.formData.role,
@@ -241,11 +235,11 @@ export default {
         if (this.isPasswordRequired) {
           params.password = SHA256.hmac(this.formData.username, this.formData.password);
         }
-        const res = await this.$api.systemManage[url](params);
+        const res = await this.$api.systemManage[this.dialog.user.type === 'edit' ? 'editUser' : 'addUser'](params);
         this.$refs.dialogUser.loadingClose();
         if (!!res && res.status === 200) {
           this.dialog.user.nodeId = 0;
-          this.$message.success(this.dialog.user.type === 'edit' ? '编辑用户成功' : '增加用户成功');
+          this.$message.success(this.dialog.user.type === 'edit' ? '编辑用户成功' : '新增用户成功');
           this.refreshTableData();
         } else {
           this.$message.error(res.message);

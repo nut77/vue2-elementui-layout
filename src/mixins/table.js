@@ -9,7 +9,7 @@ export default {
         sortOrders: ['descending', 'ascending'],
         orderField: '',
         orderBy: 'DESC',
-        selection: ''
+        selection: []
       },
       pagination: {
         size: 30,
@@ -20,12 +20,19 @@ export default {
     };
   },
   methods: {
-    /**
-     * 分页事件
-     * @param {number} val - 值
-     * @param {string} type - 分页类型，size：修改分页大小，current：查看指定页数
-     */
-    pagingEvent(val, type) {
+    async setTableData(module, apiName, params) {
+      this.table.isLoading = true;
+      const res = await this.$api[module][apiName](params);
+      this.table.isLoading = false;
+      if (!!res && res.status === 200) {
+        this.table.data = (res.data || {data: []}).data;
+        this.pagination.total = (res.data || {total: []}).total;
+      } else {
+        this.$message.error(res.message);
+      }
+    },
+    // 分页事件：val - 值（当前页或者分页大小）、type - 事件类型，size：改变分页大小，current：改变当前页
+    handlePaging(val, type = 'current') {
       if (type === 'size') {
         this.pagination.size = val;
         this.pagination.current = 1;
@@ -35,11 +42,15 @@ export default {
       this.getTableData();
     },
     // 表格排序
-    sortChange({column, prop, order}) {
-      this.table.orderField = prop;
-      this.table.orderBy = order === 'ascending' ? 'ASC' : 'DESC';
+    handleSortChange(prop, order) {
+      this.setTableSortValue({prop, order});
       this.pagination.current = 1;
       this.getTableData();
+    },
+    // 设置表格排序值
+    setTableSortValue({prop, order}) {
+      this.table.orderField = prop;
+      this.table.orderBy = order === 'ascending' ? 'ASC' : 'DESC';
     },
     // 搜索、新增、删除 表格数据时调用
     refreshTableData(obj) {
@@ -47,21 +58,48 @@ export default {
       this.getTableData();
     },
     // 表格勾选
-    tableSelection(row) {
+    handleSelectionChange(row) {
       this.table.selection = row;
     },
-    // 获取分页参数
-    getPageParams() {
-      return {
-        currentPage: this.pagination.current,
-        pageSize: this.pagination.size
-      };
+    // 拿到表格勾选参数
+    getSelectParams(paramKey = '', selection = this.table.selection) {
+      if (paramKey && /string|object/.test(typeof paramKey)) return false;
+      const params = selection.map(item => {
+        if (typeof paramKey === 'string') return item[paramKey];
+        let temp = [];
+        if (paramKey instanceof Array) {
+          // 如果是数组 如：['ip', 'id']
+          for (const key of paramKey) temp.push(item[key]);
+        } else {
+          // 如果是对象 如：{dataId: 'id', dataInId: 'inId'}
+          temp = {};
+          for (const key in paramKey) {
+            temp[key] = item[paramKey[key]];
+          }
+        }
+        return temp;
+      });
+
+      return params;
     },
-    // 表格勾选参数
-    tableSelectParams(key, temp = this.table.selection) {
-      const list = [];
-      temp.map(it => list.push(it[key]));
-      return list;
+    // 根据需要获取的表格查询参数类型，获取表格查询参数
+    getTableRequestParams(type = ['page', 'sort'], otherParams = {}) {
+      if (!(type instanceof Array)) return {...otherParams};
+      const params = {};
+      if (type.includes('page')) {
+        Object.assign(params, {
+          currentPage: this.pagination.current,
+          pageSize: this.pagination.size
+        });
+      }
+      if (type.includes('sort')) {
+        if (!this.table.orderField) this.setTableSortValue(this.table.defaultSort);
+        Object.assign(params, {
+          orderField: this.table.orderField,
+          orderBy: this.table.orderBy
+        });
+      }
+      return Object.assign(params, otherParams);
     },
     /**
      * 下载

@@ -8,8 +8,8 @@
         stripe
         :height="hasPagination ? 'calc(100% - 50px)' : '100%'"
         :default-sort="table.defaultSort"
-        @sort-change="$emit('sortChange', $event)"
-        @selection-change="$emit('tableSelection', $event)">
+        @sort-change="({prop, order}) => $emit('sortChange', prop, order)"
+        @selection-change="selection => $emit('selectionChange', selection)">
         <slot name="columnType"></slot>
         <template v-for="(item, i) in table.column">
           <el-table-column
@@ -35,8 +35,8 @@
 
     <template v-if="hasPagination">
       <el-pagination
-        @size-change="$emit('sizeChange', $event, 'size')"
-        @current-change="$emit('currentChange', $event, 'current')"
+        @size-change="val => $emit('sizeChange', val, 'size')"
+        @current-change="val => $emit('currentChange', val, 'current')"
         :current-page="pagination.current"
         :page-sizes="pagination.sizes"
         :page-size="pagination.size"
@@ -50,7 +50,7 @@
 
 <script>
 /**
- * table.column属性：
+ * table.column属性如下：
  * label: 表格列标签label
  * prop: 列属性prop
  * align: 列对齐方式，默认left
