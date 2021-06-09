@@ -38,8 +38,8 @@ const mutations = {
   setToken(state, data) {
     state.userInfo.token = data;
   },
-  setTimeToGetToken(state) {
-    state.timeToGetToken = Date.now();
+  setTimeToGetToken(state, data) {
+    state.timeToGetToken = data === undefined ? Date.now() : data;
   },
   resetUserInfo(state) {
     Object.assign(state.userInfo, userInfoInit);

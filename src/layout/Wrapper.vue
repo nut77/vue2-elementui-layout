@@ -24,9 +24,11 @@
 import WrapperLeft from './WrapperLeft';
 import WrapperTop from './WrapperTop';
 import WrapperContent from './WrapperContent';
+import mixins from '@/mixins';
 export default {
   name: 'Wrapper',
   components: {WrapperLeft, WrapperTop, WrapperContent},
+  mixins: [mixins.userInfo],
   data() {
     return {
       hasWrapperTop: true,

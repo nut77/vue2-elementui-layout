@@ -99,6 +99,7 @@ const request = async (options = {}) => {
     location.pathname !== '/login' && (res.message = MESSAGE.PERMISSION_DENIED);
     localStorage.clear();
     store.commit('resetUserInfo');
+    store.commit('setTimeToGetToken', 0);
     location.replace('/login');
     return res;
   }
@@ -124,7 +125,9 @@ const ajax = async (method = 'get', url, params = {}, config = {}) => {
 
   // 刷新token
   const filterReg = /login|logout|refresh/;
-  if (Date.now() - REFRESH_TOKEN_INTERVAL * 60 * 1000 > store.state.timeToGetToken && !filterReg.test(config.url) && !isRefreshing) {
+  if (store.state.timeToGetToken &&
+    Date.now() - REFRESH_TOKEN_INTERVAL * 60 * 1000 > store.state.timeToGetToken &&
+    !filterReg.test(config.url) && !isRefreshing) {
     isRefreshing = true;
     const res = await get('/auth/refresh');
     isRefreshing = false;
