@@ -4,7 +4,7 @@ export default {
       hasPagination: true,
       table: {
         isLoading: false,
-        hasExpandColumn: false,
+        isSingleExpanded: true,
         column: [],
         data: [],
         defaultSort: {prop: 'createTime', order: 'descending'},
@@ -12,7 +12,8 @@ export default {
         orderField: '',
         orderBy: 'DESC',
         selection: [],
-        expandRowKeys: [123]
+        rowKeyProps: ['id'],
+        expandRowKeys: []
       },
       pagination: {
         size: 30,
@@ -80,9 +81,16 @@ export default {
     handleSelectionChange(row) {
       this.table.selection = row;
     },
+    // 获取表格行键值，一般在有扩展行的时候才用
+    getRowKey(row, props = this.table.rowKeyProps) {
+      return props.reduce((str, key) => str + row[key], '');
+    },
     // 表格行展开
-    handleExpandChange(row, expandedRows) {
-      debugger;
+    handleExpandChange(expandRows) {
+      this.table.expandRowKeys = expandRows.map(row => this.table.getRowKey(row));
+    },
+    getExpandRowDetail(row) {
+      // todo
     },
     // 拿到表格勾选参数
     getSelectParams(paramKey = '', selection = this.table.selection) {
@@ -191,5 +199,8 @@ export default {
         }
       }
     }
+  },
+  created() {
+    this.table.getRowKey = this.getRowKey;
   }
 };
