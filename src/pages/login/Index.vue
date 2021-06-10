@@ -139,6 +139,8 @@ export default {
     }
   },
   created() {
+    this.$store.commit('resetUserInfo');
+    this.$store.commit('setTimeToGetToken', 0);
     this.checkViewport();
     this.checkVersion();
     this.checkResolution();

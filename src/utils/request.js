@@ -37,9 +37,33 @@ axiosInstance.interceptors.request.use(config => {
 });
 
 // 响应拦截器
-axiosInstance.interceptors.response.use(response => {
+const REFRESH_TOKEN_INTERVAL = process.env.VUE_APP_REFRESH_TOKEN_INTERVAL;
+let refreshRequests = [];
+let isRefreshing = false;
+axiosInstance.interceptors.response.use(async response => {
   // 把axios的data层去掉原本（res.data.xx） 直接使用数据就可以res.xx即可
-  return response.data;
+  const data = response.data;
+  const status = data.status;
+  // 刷新token
+  if (store.state.timeToGetToken && Date.now() - REFRESH_TOKEN_INTERVAL * 60 * 1000 > store.state.timeToGetToken) {
+    if (!isRefreshing) {
+      isRefreshing = true;
+      const res = await get('/auth/refresh');
+      isRefreshing = false;
+      store.commit('setToken', res.data);
+      store.commit('setTimeToGetToken');
+      // 已经刷新了token，将所有队列中的请求进行重试
+      refreshRequests.forEach(cb => cb());
+      refreshRequests = [];
+      return axiosInstance(response.config);
+    }
+    if (status === 200 || response.config.url.includes('/auth/refresh')) return data;
+    // 缓存请求,将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
+    return new Promise((resolve) => {
+      refreshRequests.push(() => resolve(axiosInstance(response.config)));
+    });
+  }
+  return data;
 }, error => {
   return Promise.reject(error);
 });
@@ -95,13 +119,10 @@ const request = async (options = {}) => {
       status: 500
     };
   }
-  if (res.status === 401) {
-    location.pathname !== '/login' && (res.message = MESSAGE.PERMISSION_DENIED);
+  if (res.status === 401 && location.pathname !== '/login') {
+    res.message = MESSAGE.PERMISSION_DENIED;
     localStorage.clear();
-    store.commit('resetUserInfo');
-    store.commit('setTimeToGetToken', 0);
     location.replace('/login');
-    return res;
   }
   if (res.status >= 500 && res.status !== 502) res.message = MESSAGE.NETWORK_ERR;
   return res;
@@ -115,25 +136,11 @@ const request = async (options = {}) => {
  * @param {Object} [config] - 请求的额外配置项，如：contentType, headers, onUploadProgress等
  * @return {Promise} 返回请求结果
  */
-const REFRESH_TOKEN_INTERVAL = process.env.VUE_APP_REFRESH_TOKEN_INTERVAL;
-let isRefreshing = false;
 const ajax = async (method = 'get', url, params = {}, config = {}) => {
   const options = Object.assign({}, config);
   options[/get|delete/.test(method) ? 'params' : 'data'] = params;
   options.method = method;
   options.url = url;
-
-  // 刷新token
-  const filterReg = /login|logout|refresh/;
-  if (store.state.timeToGetToken &&
-    Date.now() - REFRESH_TOKEN_INTERVAL * 60 * 1000 > store.state.timeToGetToken &&
-    !filterReg.test(config.url) && !isRefreshing) {
-    isRefreshing = true;
-    const res = await get('/auth/refresh');
-    isRefreshing = false;
-    store.commit('setToken', res.data);
-    store.commit('setTimeToGetToken');
-  }
   return request(options);
 };
 const get = (url, params = {}, config = {}) => ajax('get', url, params, config);

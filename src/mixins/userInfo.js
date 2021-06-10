@@ -10,8 +10,6 @@ export default {
   methods: {
     logout(msg = '凭证失效，请重新登录', type = 'error') {
       msg && this.$message[type](msg);
-      this.$store.commit('resetUserInfo');
-      this.$store.commit('setTimeToGetToken', 0);
       localStorage.clear();
       location.replace('/login');
     }
