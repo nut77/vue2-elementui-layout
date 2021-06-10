@@ -1,15 +1,17 @@
 <template>
-  <div class="wfull table-container">
+  <div class="wfull table-container" ref="baseTableContainer">
     <template v-if="!!table && !!table.column.length">
       <el-table
+        ref="baseTable"
         v-loading="table.isLoading"
         class="wfull"
-        :data="table.data"
         stripe
+        :data="table.data"
         :height="hasPagination ? 'calc(100% - 50px)' : '100%'"
         :default-sort="table.defaultSort"
         @sort-change="({prop, order}) => $emit('sortChange', prop, order)"
-        @selection-change="selection => $emit('selectionChange', selection)">
+        @selection-change="selection => $emit('selectionChange', selection)"
+        @expand-change="(row, expandedRows) => $emit('expandChange', row, expandedRows)">
         <slot name="columnType"></slot>
         <template v-for="(item, i) in table.column">
           <el-table-column
@@ -72,6 +74,23 @@ export default {
     hasPagination: {
       type: Boolean,
       default: true
+    },
+    rowKeyProps: {
+      type: Array,
+      default: () => ['id']
+    }
+  },
+  methods: {
+    getRowKey(row, props = this.rowKeyProps) {
+      return props.reduce((str, key) => str + row[key], '');
+    }
+  },
+  mounted() {
+    // :row-key="getRowKey" :expand-row-keys="table.expandRowKeys"
+    if (this.table.hasExpandColumn) {
+      // 设置展开行相关参数 expandRowKeys设置了，rowKey必须设置
+      this.$set(this.$refs.baseTable.$options.propsData, 'expandRowKeys', this.table.expandRowKeys);
+      this.$set(this.$refs.baseTable.$options.propsData, 'rowKey', this.getRowKey);
     }
   }
 };

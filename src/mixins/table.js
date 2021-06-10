@@ -1,15 +1,18 @@
 export default {
   data() {
     return {
+      hasPagination: true,
       table: {
         isLoading: false,
+        hasExpandColumn: false,
         column: [],
         data: [],
         defaultSort: {prop: 'createTime', order: 'descending'},
         sortOrders: ['descending', 'ascending'],
         orderField: '',
         orderBy: 'DESC',
-        selection: []
+        selection: [],
+        expandRowKeys: [123]
       },
       pagination: {
         size: 30,
@@ -20,6 +23,19 @@ export default {
     };
   },
   methods: {
+    // 拿取表格数据后回到顶部
+    scrollToTop() {
+      document.querySelector('.table-container .el-table__body-wrapper').scrollTo(0, 0);
+    },
+    // 拿到表格对象
+    getBaseTableComponent(parentComponent = this, refName = 'baseTable') {
+      let component = parentComponent.$refs[refName];
+      if (component) return component;
+      for (const childComponent of parentComponent.$children) {
+        component = this.getBaseTableComponent(childComponent, refName);
+        if (component) return component;
+      }
+    },
     async setTableData(module, apiName, params) {
       this.table.isLoading = true;
       const res = await this.$api[module][apiName](params);
@@ -40,12 +56,14 @@ export default {
         this.pagination.current = val;
       }
       this.getTableData();
+      this.scrollToTop();
     },
     // 表格排序
     handleSortChange(prop, order) {
       this.setTableSortValue({prop, order});
       this.pagination.current = 1;
       this.getTableData();
+      this.scrollToTop();
     },
     // 设置表格排序值
     setTableSortValue({prop, order}) {
@@ -56,10 +74,15 @@ export default {
     refreshTableData(obj) {
       this.pagination.current = 1;
       this.getTableData();
+      this.scrollToTop();
     },
     // 表格勾选
     handleSelectionChange(row) {
       this.table.selection = row;
+    },
+    // 表格行展开
+    handleExpandChange(row, expandedRows) {
+      debugger;
     },
     // 拿到表格勾选参数
     getSelectParams(paramKey = '', selection = this.table.selection) {
@@ -100,6 +123,9 @@ export default {
         });
       }
       return Object.assign(params, otherParams);
+    },
+    rowIndex(index) {
+      return (this.hasPagination ? (this.pagination.current - 1) * this.pagination.size : 0) + index + 1;
     },
     /**
      * 下载
