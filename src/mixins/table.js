@@ -89,8 +89,35 @@ export default {
     handleExpandChange(expandRows) {
       this.table.expandRowKeys = expandRows.map(row => this.table.getRowKey(row));
     },
-    getExpandRowDetail(row) {
-      // todo
+    // 拿到行展开信息：key、是否已展开、在expandRowKeys中的序号
+    getExpandRowInfo(row) {
+      const rowKey = this.table.getRowKey(row);
+      const index = this.table.expandRowKeys.indexOf(rowKey);
+      const isExpanded = index !== -1;
+      return {rowKey, isExpanded, index};
+    },
+    // 手动触发行展开-几乎用不到
+    manualTriggerExpandRow(row) {
+      const {rowKey, isExpanded, index} = this.getExpandRowInfo(row);
+      const args = isExpanded ? [index, 1] : [0, this.table.isSingleExpanded ? this.table.expandRowKeys.length : 0, rowKey];
+      this.table.expandRowKeys.splice(...args);
+    },
+    // 切换行展开
+    toggleRowExpansion(row) {
+      // this.manualTriggerExpandRow(row);
+      this.getBaseTableComponent().toggleRowExpansion(row);
+      const {isExpanded: isNeedExpand} = this.getExpandRowInfo(row);
+      if (isNeedExpand) {
+        if (!row.detail) this.$set(row, 'detail', {isLoading: true, data: {}});
+        this.getExpandRowDetail(row);
+      }
+    },
+    // 设置行展开数据
+    async setExpandRowDetail(row, module, apiName, params) {
+      row.detail.isLoading = true;
+      const res = await this.$api[module][apiName](params);
+      row.detail.isLoading = false;
+      if (res.status === 200) row.detail.data = res.data;
     },
     // 拿到表格勾选参数
     getSelectParams(paramKey = '', selection = this.table.selection) {

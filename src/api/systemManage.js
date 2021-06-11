@@ -6,6 +6,6 @@ export default {
   getUser: params => ajax.post('/user/queryPage', params),
   checkUser: params => ajax.get(`/user/queryByUsername/${params}`),
   getSystemLog: params => ajax.post('/systemLog/queryPage', params),
-  getSystemLogDetail: params => ajax.get('/systemLog/detail', params),
+  getSystemLogDetail: params => ajax.get(`/systemLog/detail?id=${params}`),
   downloadSystemLog: params => ajax.get('/systemLog/download', params)
 };
