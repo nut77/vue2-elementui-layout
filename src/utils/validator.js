@@ -5,6 +5,7 @@ import Api from '@/api';
 /**
  * 表单验证前期工作 先验证是否是必填
  * @param {Object} rule - 表单项的相关属性
+ * @param {string} [rule.field] - 表单项属性名
  * @param {boolean} [rule.message] - 表单项输入错误后的提示语句
  * @param {boolean} [rule.required] - 该表单项是否必填
  * @param {boolean} [rule.isUnique] - 该表单项需要做唯一性验证
@@ -22,7 +23,7 @@ async function validator(rule, value, callback, handler = null) {
   }
   // 必填且无值 提示为空，不继续验证
   if (rule.required && isValueEmpty) {
-    const msg = rule.message ? rule.message : `请输入${rule.fieldType || ''}`;
+    const msg = rule.message ? rule.message : `请输入${rule.fieldType || rule.field}`;
     callback(new Error(msg));
     return false;
   }
@@ -92,10 +93,17 @@ const emailArr = (rule, value, callback) => validator(rule, value, callback, (va
   }
 });
 
+// 用户名
+const username = (rule, value, callback) => validator(rule, value, callback, async (value) => {
+  if (rule.isEdit) return '';
+  const result = await Api.systemManage.checkUser(value);
+  if (!!result && result.status === 200 && result.data) return '该用户名已存在';
+});
+
 // 密码
 const password = (rule, value, callback) => validator(rule, value, callback, (value) => {
   const newPassword = rule.newPassword;
-  const type = rule.fieldType;
+  const type = rule.fieldType || rule.field;
   const ERROR_MSG = {
     ILLEGAL: `${type}为8~20位大小写英文字母和数字（特殊字符可选）混合`,
     NOT_REPEAT: '确认密码和新密码不同',
@@ -132,5 +140,6 @@ export default {
   port,
   file,
   taskTarget,
+  username,
   password
 };

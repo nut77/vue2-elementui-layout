@@ -135,8 +135,9 @@ export default {
     return {
       isLoading: true,
       table: {
+        defaultSort: {prop: 'created', order: 'descending'},
         column: [
-          {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150},
+          {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150, sortable: true},
           {label: '用户名', prop: 'username', sortable: true},
           {label: '用户类型', prop: 'role', align: 'center'},
           {label: '描述', prop: 'description'},
@@ -159,7 +160,7 @@ export default {
       userFormDefault,
       formData: {...userFormDefault},
       formRules: {
-        username: [{required: true, validator: this.$validator.userName, isEdit: false}],
+        username: [{required: true, validator: this.$validator.username, isEdit: false, fieldType: '用户名'}],
         password: [
           {
             trigger: 'change',
@@ -170,7 +171,7 @@ export default {
           },
           {
             trigger: 'blur',
-            passwordType: '密码',
+            fieldType: '密码',
             validator: (rule, value, callback) => {
               rule.required = this.isPasswordRequired;
               this.$validator.password(rule, value, callback);
@@ -180,7 +181,7 @@ export default {
         repeatPassword: [{
           required: true,
           trigger: 'blur',
-          passwordType: '确认密码',
+          fieldType: '确认密码',
           validator: (rule, value, callback) => {
             rule.newPassword = this.formData.password;
             this.$validator.password(rule, value, callback);
@@ -264,7 +265,3 @@ export default {
   }
 };
 </script>
-
-<style scoped lang="less">
-
-</style>
