@@ -29,7 +29,7 @@
       <template #operator>
         <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
-            <el-button type="warning" size="small" @click="handleDialogShowUser('edit', row)">下载</el-button>
+            <el-button type="warning" size="small" @click="handleDownload(row)">下载</el-button>
             <el-button type="primary" size="small" @click="toggleRowExpansion(row)">详情</el-button>
           </template>
         </el-table-column>

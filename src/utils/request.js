@@ -2,6 +2,7 @@
 import axios from 'axios';
 import store from '../store/index';
 import qs from 'qs';
+import {Message} from "element-ui";
 
 // 创建一个 axios 实例
 const axiosInstance = axios.create({
@@ -55,18 +56,30 @@ axiosInstance.interceptors.response.use(async response => {
       // 已经刷新了token，将所有队列中的请求进行重试
       refreshRequests.forEach(cb => cb());
       refreshRequests = [];
-      return axiosInstance(response.config);
+      return request(getParamsFromResponse(response));
     }
     if (status === 200 || response.config.url.includes('/auth/refresh')) return data;
     // 缓存请求,将resolve放进队列，用一个函数形式来保存，等token刷新后直接执行
     return new Promise((resolve) => {
-      refreshRequests.push(() => resolve(axiosInstance(response.config)));
+      refreshRequests.push(() => resolve(request(getParamsFromResponse(response))));
     });
   }
   return data;
 }, error => {
   return Promise.reject(error);
 });
+
+// 通过响应拦截器Response 获取关键请求参数
+function getParamsFromResponse(response) {
+  const config = response.config;
+  return {
+    url: config.url,
+    method: config.method,
+    headers: config.headers,
+    params: config.params,
+    data: JSON.parse(config.data)
+  };
+}
 
 /**
  * 构建请求参数
@@ -121,6 +134,7 @@ const request = async (options = {}) => {
   }
   if (res.status === 401 && location.pathname !== '/login') {
     res.message = MESSAGE.PERMISSION_DENIED;
+    Message.error(res.message);
     localStorage.clear();
     location.replace('/login');
   }
