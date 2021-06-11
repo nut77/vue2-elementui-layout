@@ -12,6 +12,6 @@ export default {
 
 <style lang="less" scoped>
   .el-main {
-    background-color: @background-color-base-opacity;
+    background-color: @background-color-light;
   }
 </style>

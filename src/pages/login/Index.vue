@@ -159,7 +159,7 @@ export default {
     align-items: center;
     min-height: 600px;
     height: 100%;
-    background-color: @background-color-darker;
+    background-color: @background-color-light;
   }
   .login-box {
     width: 645px;
@@ -227,7 +227,7 @@ export default {
     position: absolute;
     bottom: 0;
     width: 100%;
-    background-color: rgba(16, 16, 29, 0.6);
+    background-color: @background-color-darker;
     text-align: center;
     line-height: 50px;
   }

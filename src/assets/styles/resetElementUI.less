@@ -6,26 +6,6 @@
   border: 0 none !important;
 }
 
-.el-menu--subNav {
-  @height: 50px;
-
-  &.el-menu--horizontal {
-    height: @height;
-    background-color: @background-color-base;
-
-    .el-menu-item {
-      padding: 0 30px;
-    }
-  }
-
-  .el-menu-item {
-    display: flex;
-    align-items: center;
-    height: @height  !important;
-    line-height: @height  !important;
-  }
-}
-
 // Button
 .el-button {
   color: white !important;
@@ -101,7 +81,7 @@
 // Table
 .el-table {
   font-size: 12px !important;
-  background-color: rgba(16, 16, 29, .8) !important;
+  background-color: @background-color-base-opacity !important;
   &:before {
     height: 0 !important;
   }
@@ -113,8 +93,8 @@
   }
   th {
     background: @color-black-lighter !important;
+    color: @color-text-regular;
     font-size: 14px;
-    font-weight: bold;
   }
 }
 .el-table th > .cell {
@@ -135,7 +115,7 @@
   border-bottom: 0 !important;
 }
 .el-table--striped .el-table__body tr.el-table__row--striped.el-table__row--striped.el-table__row--striped td {
-  background-color: rgba(16, 16, 29, .8) !important;
+  background-color: @background-color-base-opacity !important;
 }
 .el-table__body-wrapper {
   .wfull;
@@ -206,7 +186,7 @@ tr .el-table__expanded-cell {
 
 // v-loading
 .el-loading-mask {
-  background-color: @background-color-darker !important;
+  background-color: @background-color-base-opacity !important;
 }
 
 // Tooltip

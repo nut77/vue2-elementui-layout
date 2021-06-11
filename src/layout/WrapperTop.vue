@@ -69,12 +69,12 @@ export default {
         modifyPasswordRepeat: ''
       },
       formRules: {
-        password: [{required: true, trigger: 'blur', passwordType: '原始密码', validator: this.$validator.password}],
-        modifyPassword: [{required: true, trigger: 'blur', passwordType: '新密码', validator: this.$validator.password}],
+        password: [{required: true, trigger: 'blur', fieldType: '原始密码', validator: this.$validator.password}],
+        modifyPassword: [{required: true, trigger: 'blur', fieldType: '新密码', validator: this.$validator.password}],
         modifyPasswordRepeat: [{
           required: true,
           trigger: 'blur',
-          passwordType: '确认密码',
+          fieldType: '确认密码',
           validator: (rule, value, callback) => {
             rule.newPassword = this.formData.modifyPassword;
             this.$validator.password(rule, value, callback);
@@ -154,29 +154,20 @@ export default {
   .el-menu--horizontal .el-menu-item-box {
     display: flex;
   }
-  .el-menu-item {
-    width: 157px;
+  /deep/ .el-menu-item {
+    width: 130px;
+    height: 60px;
     background-color: @background-color-darker !important;
     color: @color-text-regular !important;
     font-size: 16px;
     text-align: center;
-    line-height: 55px !important;
+    line-height: 60px !important;
     &:hover {
       background-color: rgba(65, 178, 255, 0.8) !important;
     }
     &.is-active {
-      font-weight: bold;
       background-color: @color-primary !important;
       color: @color-text-primary !important;
-      .el-header-icon--taskCenter {
-        background-position: 0 1px;
-      }
-      .el-header-icon--systemManage {
-        background-position: -25px 0;
-      }
-    }
-    .el-header-icon--taskCenter {
-      background-position: 0 -24px;
     }
     .el-header-icon--systemManage {
       background-position: -25px -25px;

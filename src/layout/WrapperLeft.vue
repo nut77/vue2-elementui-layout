@@ -34,8 +34,22 @@ export default {
 
 <style lang="less" scoped>
   .el-aside {
-    background-color: @background-color-base;
+    background-color: @background-color-lighter;
     text-align: center;
     line-height: 200px;
+  }
+  /deep/ .el-menu-item,
+  /deep/ .el-submenu__title {
+    background-color: @background-color-lighter !important;
+    color: @color-text-regular !important;
+    text-align: left;
+    &:hover,
+    &:hover * {
+      color: rgba(65, 178, 255, 0.8) !important;
+    }
+  }
+  /deep/ .el-menu-item.is-active,
+  /deep/ .el-submenu.is-active .el-submenu__title * {
+    color: @color-primary !important;
   }
 </style>
