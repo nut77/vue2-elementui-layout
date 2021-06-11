@@ -2,7 +2,7 @@
 import axios from 'axios';
 import store from '../store/index';
 import qs from 'qs';
-import {Message} from "element-ui";
+import {Message} from 'element-ui';
 
 // 创建一个 axios 实例
 const axiosInstance = axios.create({
