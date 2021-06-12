@@ -1,3 +1,4 @@
+import qs from 'qs';
 export default {
   data() {
     return {
@@ -163,32 +164,29 @@ export default {
       return (this.hasPagination ? (this.pagination.current - 1) * this.pagination.size : 0) + index + 1;
     },
     /**
-     * 下载
-     * @param url               接口地址
-     * @param params            下载参数，格式为：?id=123&name="文件下载"
-     * @param [downloadName]    下载文件名
-     * @param [isDownload]      是否下载
+     * 同步下载，利用浏览器自带的文件下载功能
+     * @param {string} url - 接口地址
+     * @param {Object} [params=null] - 下载参数，qs.stringify会将该对像转为形如：id=123&name=Ada
+     * @param {string} [filename=''] - 下载文件名
      */
-    downLoadEvt(url, params, downloadName = '', isDownload = true) {
+    handleDownload(url, params = null, filename = '') {
       const el = document.createElement('a');
+      el.style.display = 'none';
       document.body.appendChild(el);
-      if (isDownload) el.setAttribute('download', downloadName);
-      el.setAttribute('target', '_blank');
-      const downUrl = params ? `${url}${params}` : url;
-      el.href = this.$tool.getFullUrl(downUrl);
-      console.log(el.href);
+      filename && el.setAttribute('download', filename);
+      const queryStr = [qs.stringify(params)].map(item => item && `?${item}`)[0];
+      el.href = this.$tool.getFullUrl(url + queryStr);
       el.click();
       document.body.removeChild(el);
     },
     /**
-     * 下载--带header
-     * @param url               接口地址
-     * @param data              下载参数，get格式为：?id=123&&name="文件下载"
-     * @param method            请求方法get/post(不区分大小写)
-     * @param [downloadName]    下载文件名(必填，若为空，下载下来都是txt格式)
-     * @param [isDownload]      是否下载
+     * 异步-带header(token)
+     * @param {string} url - 接口地址
+     * @param {Object} params - 下载参数，get格式为：?id=123&&name="文件下载"
+     * @param {string} [method='GET'] - 请求方法get/post(不区分大小写)
+     * @param {string} filename - 下载文件名(必填，若为空，下载下来都是txt格式)
      */
-    downLoadAxiosEvt(url, data, method = 'GET', contentType = 'application/json', downloadName = '下载文件名必填', isDownload = true) {
+    handleDownloadAsync(url, params, method = 'GET', contentType = 'application/json', filename) {
       const ajax = new XMLHttpRequest();
       let _url = this.$tool.getFullUrl(url);
       const _method = method.toUpperCase();
