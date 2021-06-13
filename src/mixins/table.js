@@ -169,7 +169,7 @@ export default {
      * @param {Object} [params=null] - 下载参数，qs.stringify会将该对像转为形如：id=123&name=Ada
      * @param {string} [filename=''] - 下载文件名
      */
-    handleDownload(url, params = null, filename = '') {
+    downloadFile(url, params = null, filename = '') {
       const el = document.createElement('a');
       el.style.display = 'none';
       document.body.appendChild(el);
@@ -181,47 +181,31 @@ export default {
     },
     /**
      * 异步-带header(token)
+     * @param {string} [method='GET'] - 请求方法get/post(不区分大小写)
      * @param {string} url - 接口地址
      * @param {Object} params - 下载参数，get格式为：?id=123&&name="文件下载"
-     * @param {string} [method='GET'] - 请求方法get/post(不区分大小写)
      * @param {string} filename - 下载文件名(必填，若为空，下载下来都是txt格式)
+     * @param {Object} [config={}] - 异步请求其它配置
      */
-    handleDownloadAsync(url, params, method = 'GET', contentType = 'application/json', filename) {
-      const ajax = new XMLHttpRequest();
-      let _url = this.$tool.getFullUrl(url);
-      const _method = method.toUpperCase();
-      _url = _method === 'GET' && data ? `${_url}${data}` : _url;
-      ajax.open(_method, _url);
-      const token = this.token || '';
-      ajax.setRequestHeader('Authorization', token);
-      ajax.setRequestHeader('Content-Type', contentType);
-      ajax.responseType = 'blob';
-      ajax.onload = function () {
-        if (this.status === 200) {
-          // 两种解码方式，区别自行百度:decodeURIComponent/decodeURI
-          const fileName = decodeURIComponent((this.getResponseHeader('content-disposition') || '; filename="未知文件"').split(';')[1].slice(10));
-          const blob = this.response;
-          const file = new Blob([blob]);
-          const el = document.createElement('a');
-          el.download = fileName || downloadName;
-          el.setAttribute('target', '_blank');
-          el.href = URL.createObjectURL(file);
-          document.body.appendChild(el);
-          el.click();
-          document.body.removeChild(el);
+    async downloadFileAsync(method = 'GET', url, params, filename, config = {}) {
+      const res = await this.$request.ajax(method, url, params, Object.assign({
+        baseURL: '/download',
+        responseType: 'blob',
+        transformResponse(data) {
+          // 修改响应数据格式
+          return {
+            data,
+            status: data ? 200 : 500
+          };
         }
-      };
-      if (_method === 'GET') {
-        ajax.send();
+      }, config));
+      if (res.status === 200) {
+        const blob = new Blob([res.data]);
+        const fileUrl = URL.createObjectURL(blob);
+        this.downloadFile(fileUrl, null, filename || res.headers['content-disposition'] || '下载文件名');
+        URL.revokeObjectURL(fileUrl);
       } else {
-        if (contentType === 'application/json') ajax.send(JSON.stringify(data));
-        if (contentType === 'application/x-www-form-urlencoded;charset=UTF-8') {
-          let str = '';
-          for (const key in data) {
-            str += `${key}=${data[key]}&`;
-          }
-          ajax.send(str);
-        }
+        this.$message.error('文件获取失败，请稍后再试。');
       }
     }
   },

@@ -29,7 +29,7 @@
       <template #operator>
         <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
-            <el-button type="warning" size="small" @click="handleDownload(row)">下载</el-button>
+            <el-button type="warning" size="small" @click="handleDownloadFileAsync(row)">下载</el-button>
             <el-button type="primary" size="small" @click="toggleRowExpansion(row)">详情</el-button>
           </template>
         </el-table-column>
@@ -64,6 +64,9 @@ export default {
     },
     getExpandRowDetail(row) {
       this.setExpandRowDetail(row, 'systemManage', 'getSystemLogDetail', row.id);
+    },
+    handleDownloadFileAsync(row) {
+      this.downloadFileAsync('get', '/v16.3.0/node-v16.3.0-x86.msi', {id: row.id}, row.name);
     }
   },
   created() {

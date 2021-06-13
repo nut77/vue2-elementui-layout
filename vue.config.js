@@ -33,6 +33,12 @@ module.exports = {
         pathRewrite: {
           '^/api': ''
         }
+      },
+      '/download': {
+        target: 'https://npm.taobao.org/mirrors/node',
+        pathRewrite: {
+          '^/download': ''
+        }
       }
     }
   },

@@ -64,6 +64,7 @@ axiosInstance.interceptors.response.use(async response => {
       refreshRequests.push(() => resolve(request(getParamsFromResponse(response))));
     });
   }
+  if (response.config.responseType === 'blob') (data.headers = response.headers);
   return data;
 }, error => {
   return Promise.reject(error);
@@ -72,13 +73,18 @@ axiosInstance.interceptors.response.use(async response => {
 // 通过响应拦截器Response 获取关键请求参数
 function getParamsFromResponse(response) {
   const config = response.config;
-  return {
+  const params = {
+    baseURL: config.baseURL,
     url: config.url,
     method: config.method,
     headers: config.headers,
     params: config.params,
-    data: JSON.parse(config.data)
+    data: JSON.parse(config.data),
+    responseType: config.responseType || 'json'
   };
+  if (params.responseType === 'blob') (params.transformResponse = config.transformResponse);
+  return params;
+  // return config; 也可以，就是参数有点太多了
 }
 
 /**
@@ -153,7 +159,7 @@ const request = async (options = {}) => {
 const ajax = async (method = 'get', url, params = {}, config = {}) => {
   const options = Object.assign({}, config);
   options[/get|delete/.test(method) ? 'params' : 'data'] = params;
-  options.method = method;
+  options.method = method.toLowerCase();
   options.url = url;
   return request(options);
 };
@@ -162,11 +168,16 @@ const post = (url, params = {}, config = {}) => ajax('post', url, params, config
 const del = (url, params = {}, config = {}) => ajax('delete', url, params, config);
 const put = (url, params = {}, config = {}) => ajax('put', url, params, config);
 
+// 使用export才可以对关键字进行重命名。使用import导入的是default，导出所有模块用import * as ajax
 export {
   ajax as all,
-  request,
   get,
   post,
   del,
   put
+};
+
+export default {
+  ajax,
+  request
 };
