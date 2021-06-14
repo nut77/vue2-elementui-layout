@@ -53,9 +53,9 @@
     <base-dialog
       ref="dialogUser"
       :title="`${dialog.user.type === 'edit' ? '编辑' : '新增'}用户`"
-      :nodeId="dialog.user.nodeId"
+      :dialogId="dialog.user.dialogId"
       @dialogConfirm="submitDialogUser"
-      @dialogClose="dialog.user.nodeId = 0">
+      @dialogClose="dialog.user.dialogId = 0">
       <div class="container">
         <el-form :model="formData" :rules="formRules" ref="userForm" label-width="80px">
           <el-form-item label="用户名" prop="username">
@@ -109,9 +109,9 @@
     <base-dialog
       ref="dialogConfirm"
       :title="dialog.confirm.title"
-      :nodeId="dialog.confirm.nodeId"
+      :dialogId="dialog.confirm.dialogId"
       @dialogConfirm="submitDialogConfirm"
-      @dialogClose="dialog.confirm.nodeId = 0">
+      @dialogClose="dialog.confirm.dialogId = 0">
       <p class="base-dialog-tooltip">{{dialog.confirm.tooltip}}</p>
     </base-dialog>
   </div>
@@ -147,11 +147,11 @@ export default {
       isResetPassword: false,
       dialog: {
         user: {
-          nodeId: 0,
+          dialogId: 0,
           type: 'add'
         },
         confirm: {
-          nodeId: 0,
+          dialogId: 0,
           title: '',
           tooltip: '',
           requestParams: []
@@ -212,12 +212,12 @@ export default {
       }
       this.dialog.user.type = type;
       this.formRules.username[0].isEdit = this.dialog.user.type === 'edit';
-      this.dialog.user.nodeId = Date.now();
+      this.dialog.user.dialogId = Date.now();
     },
     // type: delete
     handleDialogShowConfirm(type, row) {
       Object.assign(this.dialog.confirm, {
-        nodeId: Date.now(),
+        dialogId: Date.now(),
         title: '确认删除',
         tooltip: '确认删除该用户？',
         requestParams: row.id
@@ -228,7 +228,7 @@ export default {
       const res = await this.$api.systemManage.delUser(this.dialog.requestParams);
       this.$refs.dialogConfirm.loadingClose();
       if (!!res && res.status === 200) {
-        this.dialog.confirm.nodeId = 0;
+        this.dialog.confirm.dialogId = 0;
         this.$message.success('删除用户成功');
         this.refreshTableData();
       } else {
@@ -251,7 +251,7 @@ export default {
         const res = await this.$api.systemManage[this.dialog.user.type === 'edit' ? 'editUser' : 'addUser'](params);
         this.$refs.dialogUser.loadingClose();
         if (!!res && res.status === 200) {
-          this.dialog.user.nodeId = 0;
+          this.dialog.user.dialogId = 0;
           this.$message.success(this.dialog.user.type === 'edit' ? '编辑用户成功' : '新增用户成功');
           this.refreshTableData();
         } else {

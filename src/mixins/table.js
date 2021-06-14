@@ -13,6 +13,8 @@ export default {
         orderField: '',
         orderBy: 'DESC',
         selection: [],
+        selectParamProp: 'id',
+        selectParams: [],
         rowKeyProps: ['id'],
         expandRowKeys: []
       },
@@ -81,6 +83,30 @@ export default {
     // 表格勾选
     handleSelectionChange(row) {
       this.table.selection = row;
+      this.setSelectParams();
+    },
+    setSelectParams() {
+      this.table.selectParams = this.getSelectParams();
+    },
+    // 拿到表格勾选参数
+    getSelectParams(paramKey = this.table.selectParamProp, selection = this.table.selection) {
+      if (!paramKey || !/string|object/.test(typeof paramKey)) return false;
+      const params = selection.map(item => {
+        if (typeof paramKey === 'string') return item[paramKey];
+        let temp = [];
+        if (paramKey instanceof Array) {
+          // 如果是数组 如：['ip', 'id']
+          for (const key of paramKey) temp.push(item[key]);
+        } else {
+          // 如果是对象 如：{dataId: 'id', dataInId: 'inId'}
+          temp = {};
+          for (const key in paramKey) {
+            temp[key] = item[paramKey[key]];
+          }
+        }
+        return temp;
+      });
+      return params;
     },
     // 获取表格行键值，一般在有扩展行的时候才用
     getRowKey(row, props = this.table.rowKeyProps) {
@@ -119,27 +145,6 @@ export default {
       const res = await this.$api[module][apiName](params);
       row.detail.isLoading = false;
       if (res.status === 200) row.detail.data = res.data;
-    },
-    // 拿到表格勾选参数
-    getSelectParams(paramKey = '', selection = this.table.selection) {
-      if (paramKey && /string|object/.test(typeof paramKey)) return false;
-      const params = selection.map(item => {
-        if (typeof paramKey === 'string') return item[paramKey];
-        let temp = [];
-        if (paramKey instanceof Array) {
-          // 如果是数组 如：['ip', 'id']
-          for (const key of paramKey) temp.push(item[key]);
-        } else {
-          // 如果是对象 如：{dataId: 'id', dataInId: 'inId'}
-          temp = {};
-          for (const key in paramKey) {
-            temp[key] = item[paramKey[key]];
-          }
-        }
-        return temp;
-      });
-
-      return params;
     },
     // 根据需要获取的表格查询参数类型，获取表格查询参数
     getTableRequestParams(type = ['page', 'sort'], otherParams = {}) {

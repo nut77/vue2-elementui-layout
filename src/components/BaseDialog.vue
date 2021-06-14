@@ -37,7 +37,7 @@ export default {
       type: String,
       default: ''
     },
-    nodeId: {
+    dialogId: {
       type: Number,
       default: 0
     },
@@ -61,7 +61,7 @@ export default {
     }
   },
   watch: {
-    nodeId(val) {
+    dialogId(val) {
       this.visible = !!val;
     }
   }

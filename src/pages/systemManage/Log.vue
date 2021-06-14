@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="mgb20">
-      <el-button type="warning" @click="handleDialogShowUser('add')">批量下载</el-button>
+      <el-button type="warning" @click="handleDialogShow">批量下载</el-button>
     </div>
 
     <base-table
@@ -35,6 +35,20 @@
         </el-table-column>
       </template>
     </base-table>
+
+    <!--批量下载确认框-->
+    <base-dialog
+      ref="dialog"
+      title="批量下载"
+      :dialogId="dialogId"
+      @dialogConfirm="handleDialogConfirm"
+      @dialogClose="hideDialog">
+      <p class="base-dialog-tooltip tc">
+        当前选中
+        <span data-status-text="warning">{{table.selectParams ? table.selectParams.length : 0}}</span>
+        条数据，确定要下载这些数据吗？
+      </p>
+    </base-dialog>
   </div>
 </template>
 
@@ -67,6 +81,13 @@ export default {
     },
     handleDownloadFileAsync(row) {
       this.downloadFileAsync('get', '/v16.3.0/node-v16.3.0-x86.msi', {id: row.id}, row.name);
+    },
+    handleDialogShow() {
+      this.table.selectParams.length ? this.showDialog() : this.$message.error('请选择相关数据');
+    },
+    handleDialogConfirm() {
+      this.downloadFileAsync('post', '/v16.3.0/node-v16.3.0-x86.msi', {ids: this.table.selectParams}, '批量下载.zip');
+      this.hideDialog();
     }
   },
   created() {

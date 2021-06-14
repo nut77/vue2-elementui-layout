@@ -29,7 +29,7 @@
     <base-dialog
       ref="dialog"
       title="修改密码"
-      :nodeId="dialogId"
+      :dialogId="dialogId"
       @dialogConfirm="handleChangePassword"
       @dialogClose="hideDialog">
       <div class="base-dialog-container">
