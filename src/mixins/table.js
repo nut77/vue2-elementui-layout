@@ -23,7 +23,9 @@ export default {
         current: 1,
         sizes: [30, 70, 100, 150],
         total: 0
-      }
+      },
+      // 下载用到的 notification组件对象键值对
+      notifications: {}
     };
   },
   methods: {
@@ -193,16 +195,12 @@ export default {
      * @param {Object} [config={}] - 异步请求其它配置
      */
     async downloadFileAsync(method = 'GET', url, params, filename, config = {}) {
+      const actionId = Date.now();
       const res = await this.$request.ajax(method, url, params, Object.assign({
         baseURL: '/download',
         responseType: 'blob',
-        transformResponse(data) {
-          // 修改响应数据格式
-          return {
-            data,
-            status: data ? 200 : 500
-          };
-        }
+        transformResponse: this.transformResponse,
+        onDownloadProgress: event => this.downloadProgress(event, actionId, filename)
       }, config));
       if (res.status === 200) {
         const blob = new Blob([res.data]);
@@ -212,6 +210,29 @@ export default {
       } else {
         this.$message.error('文件获取失败，请稍后再试。');
       }
+    },
+    // 文件下载响应头格式
+    transformResponse(data) {
+      return {
+        data,
+        status: data ? 200 : 500
+      };
+    },
+    // 文件下载进度 actionId：时间戳-标识此次的下载事件
+    downloadProgress({loaded, total}, actionId, filename = '') {
+      const message = `${filename}<br/>${(loaded / total * 100).toFixed(2)}%（${loaded} / ${total}）`;
+      if (!this.notifications[actionId]) {
+        this.notifications[actionId] = this.$notify.info({
+          title: '文件生成进度',
+          message,
+          position: 'bottom-left',
+          dangerouslyUseHTMLString: true,
+          duration: 0
+        });
+      } else {
+        this.notifications[actionId].message = message;
+      }
+      if (this.notifications[actionId] && total === loaded) this.notifications[actionId].close();
     }
   },
   created() {
