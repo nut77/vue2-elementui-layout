@@ -5,6 +5,24 @@
 .el-menu-item {
   border: 0 none !important;
 }
+// 顶部导航子导航样式设置-可参考左侧导航设置
+.el-menu--popup {
+  background-color: @background-color-lighter !important;
+  color: @color-text-regular !important;
+  text-align: left;
+  .el-menu-item,
+  .el-submenu__title {
+    background-color: @background-color-lighter !important;
+    &:hover,
+    &:hover * {
+      color: rgba(65, 178, 255, 0.8) !important;
+    }
+  }
+  .el-menu-item.is-active,
+  .el-submenu.is-active .el-submenu__title * {
+    color: @color-primary !important;
+  }
+}
 
 // Button
 .el-button {

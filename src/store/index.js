@@ -15,7 +15,7 @@ const userInfoInit = {
 // isOnlyNavTop、isOnlyNavLeft不能都为true
 const state = {
   // 是否只有顶部导航
-  isOnlyNavTop: true,
+  isOnlyNavTop: false,
   // 是否只有左侧导航
   isOnlyNavLeft: false,
   userInfo: {...userInfoInit},

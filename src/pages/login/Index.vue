@@ -153,12 +153,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  @footer-height: 50px;
   .login-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 600px;
     height: 100%;
+    padding-bottom: @footer-height;
     background-color: @background-color-light;
   }
   .login-box {
@@ -226,9 +228,10 @@ export default {
   .login-footer {
     position: absolute;
     bottom: 0;
+    right: 0;
     width: 100%;
     background-color: @background-color-darker;
     text-align: center;
-    line-height: 50px;
+    line-height: @footer-height;
   }
 </style>

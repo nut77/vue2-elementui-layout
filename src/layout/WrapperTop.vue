@@ -88,7 +88,7 @@ export default {
       return this.$store.state.isOnlyNavTop;
     },
     isOnlyNavLeft() {
-      return this.$store.state.isOnlyNavLeft;
+      return !this.$store.state.isOnlyNavTop && this.$store.state.isOnlyNavLeft;
     }
   },
   methods: {
@@ -136,6 +136,7 @@ export default {
 <style lang="less" scoped>
   .el-header {
     display: flex;
+    justify-content: space-between;
     height: 60px;
     background-color: @background-color-darker;
     line-height: 60px;
@@ -154,7 +155,8 @@ export default {
   .el-menu--horizontal .el-menu-item-box {
     display: flex;
   }
-  /deep/ .el-menu-item {
+  /deep/ .el-menu-item,
+  /deep/ .el-submenu__title {
     width: 130px;
     height: 60px;
     background-color: @background-color-darker !important;
@@ -165,13 +167,11 @@ export default {
     &:hover {
       background-color: rgba(65, 178, 255, 0.8) !important;
     }
-    &.is-active {
-      background-color: @color-primary !important;
-      color: @color-text-primary !important;
-    }
-    .el-header-icon--systemManage {
-      background-position: -25px -25px;
-    }
+  }
+  /deep/ .el-menu-item.is-active,
+  /deep/ .el-submenu.is-active .el-submenu__title {
+    background-color: @color-primary !important;
+    color: @color-text-primary !important;
   }
   .el-header-icon {
     display: inline-block;

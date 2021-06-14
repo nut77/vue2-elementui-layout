@@ -7,7 +7,7 @@
       @setEnableSetMenuLeft="setEnableSetMenuLeft"
       @toggleCollapse="toggleCollapse">
     </wrapper-top>
-    <el-container v-if="(hasWrapperLeft && !isOnlyNavTop) || isOnlyNavLeft">
+    <el-container v-if="(hasWrapperLeft && !isOnlyNavTop) || (isOnlyNavLeft && $route.meta.isNav)">
       <wrapper-left
         :key="menuLeftKey"
         :navList="menuLeft"
@@ -129,5 +129,8 @@ export default {
     width: 100%;
     height: 100%;
     flex-direction: column;
+  }
+  .el-container {
+    overflow: hidden;
   }
 </style>
