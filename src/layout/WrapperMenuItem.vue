@@ -1,6 +1,6 @@
 <template>
   <div class="el-menu-item-box">
-    <template v-for="item of navList.filter(listItem => listItem.meta.isNav)">
+    <template v-for="item of list">
       <el-menu-item
         v-if="!item.children || (item.children && !isRecursive)"
         :index="item.meta.fullPath"
@@ -26,9 +26,15 @@ export default {
   name: 'WrapperMenuItem',
   props: {
     navList: Array,
+    // 是否需要递归显示导航菜单
     isRecursive: {
       type: Boolean,
       default: true
+    }
+  },
+  computed: {
+    list() {
+      return this.navList.filter(item => item.meta.isNav && item.meta.authority.includes(this.$store.state.userInfo.role));
     }
   }
 };

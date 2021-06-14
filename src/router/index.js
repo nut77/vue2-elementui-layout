@@ -26,9 +26,9 @@ router.beforeEach((to, from, next) => {
   }
 
   // token存在 访问不存在的页面、登录页、不属于自己权限内的页面 默认跳转首页 普通用户：任务中心 管理员：系统管理-用户管理
-  const userRole = store.state.userInfo.role || '普通用户';
-  const pageHomePath = userRole === '管理员' ? '/system-manage/user' : '/home';
-  if ((token !== 'null' && token) && (to.path === '/login' || to.matched.length === 0 || !to.meta.authority.includes(userRole))) {
+  const role = store.state.userInfo.role || '普通用户';
+  const pageHomePath = role === '管理员' ? '/system-manage/user' : '/home';
+  if ((token !== 'null' && token) && (to.path === '/login' || to.matched.length === 0 || !to.meta.authority.includes(role))) {
     next(pageHomePath);
     return false;
   }

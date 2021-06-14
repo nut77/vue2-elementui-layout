@@ -54,7 +54,7 @@ export default {
       return this.$store.state.isOnlyNavTop;
     },
     isOnlyNavLeft() {
-      return this.$store.state.isOnlyNavLeft;
+      return !this.$store.state.isOnlyNavTop && this.$store.state.isOnlyNavLeft;
     },
     wrapperContentClass() {
       if (!this.hasWrapperTop && !this.hasWrapperLeft) return 'pd0';

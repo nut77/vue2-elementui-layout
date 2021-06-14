@@ -5,7 +5,7 @@ export default {
       userId: state => state.userInfo.id,
       token: state => state.userInfo.token
     }),
-    ...mapGetters(['username', 'isAdmin', 'userRole'])
+    ...mapGetters(['username', 'isAdmin', 'role'])
   },
   methods: {
     logout(msg = '凭证失效，请重新登录', type = 'error') {

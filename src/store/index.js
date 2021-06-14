@@ -12,9 +12,10 @@ const userInfoInit = {
   role: '',
   token: ''
 };
+// isOnlyNavTop、isOnlyNavLeft不能都为true
 const state = {
   // 是否只有顶部导航
-  isOnlyNavTop: false,
+  isOnlyNavTop: true,
   // 是否只有左侧导航
   isOnlyNavLeft: false,
   userInfo: {...userInfoInit},
@@ -26,9 +27,9 @@ const state = {
 };
 
 const getters = {
-  username: state => state.userInfo.username || 'admin',
+  username: state => state.userInfo.username,
   isAdmin: state => state.userInfo.role === '管理员',
-  userRole: state => state.userInfo.role || '管理员'
+  role: state => state.userInfo.role || '管理员'
 };
 
 const mutations = {
