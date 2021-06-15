@@ -1,5 +1,19 @@
 <template>
   <div class="wfull table-container" ref="baseTableContainer" v-loading="table.isLoading">
+    <!--表格动态列设置-->
+    <el-dropdown trigger="click" class="table-setting">
+      <span class="el-dropdown-link" title="设置显示列">
+        <i class="el-icon-setting"></i>
+      </span>
+      <el-dropdown-menu class="table-setting-box" #default>
+        <el-checkbox-group v-model="checkList" @change="test">
+          <el-checkbox label="复选框 A"></el-checkbox>
+          <el-checkbox label="复选框 B"></el-checkbox>
+          <el-checkbox label="复选框 C"></el-checkbox>
+        </el-checkbox-group>
+      </el-dropdown-menu>
+    </el-dropdown>
+    <!--常规表格-->
     <template v-if="!!table && !!table.column.length">
       <el-table
         ref="baseTable"
@@ -33,9 +47,9 @@
         <slot name="operator"></slot>
       </el-table>
     </template>
-
+    <!--自定义表格-->
     <slot name="table"></slot>
-
+    <!--表格分页-->
     <template v-if="hasPagination">
       <el-pagination
         @size-change="val => $emit('sizeChange', val, 'size')"
@@ -77,7 +91,15 @@ export default {
       default: true
     }
   },
+  data() {
+    return {
+      checkList: []
+    };
+  },
   methods: {
+    test(args) {
+      debugger;
+    },
     handleExpandChange(row, expandedRows) {
       const isExpanded = expandedRows.length > 0;
       this.$emit('expandChange', isExpanded && this.table.isSingleExpanded ? [row] : expandedRows);
@@ -88,6 +110,23 @@ export default {
 
 <style scoped lang="less">
   .table-container {
+    position: relative;
     height: calc(100% - 60px);
+  }
+  .table-setting {
+    position: absolute;
+    top: 11px;
+    right: 10px;
+    z-index: 1;
+    .el-icon-setting {
+      font-size: 18px;
+      cursor: pointer;
+    }
+  }
+  .table-setting-box {
+    .pdlr10;
+    width: 130px;
+    max-height: 200px;
+    overflow: auto;
   }
 </style>

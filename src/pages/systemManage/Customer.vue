@@ -1,6 +1,7 @@
 <template>
   <div>
     <base-table
+      class="hfull"
       :pagination="pagination"
       :table="table"
       @sortChange="handleSortChange"
@@ -12,7 +13,7 @@
       <template #operator>
         <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
-            <el-button type="danger" size="small" @click="handleDialogShowConfirm('delete', row)">删除</el-button>
+            <el-button type="danger" size="small" @click="handleDialogShowConfirm(row)">删除</el-button>
           </template>
         </el-table-column>
       </template>
@@ -60,8 +61,7 @@ export default {
     getTableData() {
       this.setTableData('systemManage', 'getCustomer', this.getTableRequestParams());
     },
-    // type: delete
-    handleDialogShowConfirm(type, row) {
+    handleDialogShowConfirm(row) {
       Object.assign(this.dialog.confirm, {
         dialogId: Date.now(),
         requestParams: row.id
