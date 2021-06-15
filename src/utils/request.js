@@ -70,7 +70,7 @@ axiosInstance.interceptors.response.use(async response => {
   return Promise.reject(error);
 });
 
-// 通过响应拦截器Response 获取关键请求参数
+// 通过响应拦截器Response 获取关键请求参数 请求参数是json格式的，config.data会被转成字符串格式（axios自动转的）
 function getParamsFromResponse(response) {
   const config = response.config;
   const params = {

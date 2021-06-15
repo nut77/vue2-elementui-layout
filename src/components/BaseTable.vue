@@ -1,9 +1,8 @@
 <template>
-  <div class="wfull table-container" ref="baseTableContainer">
+  <div class="wfull table-container" ref="baseTableContainer" v-loading="table.isLoading">
     <template v-if="!!table && !!table.column.length">
       <el-table
         ref="baseTable"
-        v-loading="table.isLoading"
         class="wfull"
         stripe
         :data="table.data"
