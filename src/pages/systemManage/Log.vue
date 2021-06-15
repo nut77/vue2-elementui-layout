@@ -41,7 +41,7 @@
       ref="dialog"
       title="批量下载"
       :dialogId="dialogId"
-      @dialogConfirm="handleDialogConfirm"
+      @dialogConfirm="handleDialogSubmit"
       @dialogClose="hideDialog">
       <p class="base-dialog-tooltip tc">
         当前选中
@@ -85,7 +85,7 @@ export default {
     handleDialogShow() {
       this.table.selectParams.length ? this.showDialog() : this.$message.error('请选择相关数据');
     },
-    handleDialogConfirm() {
+    handleDialogSubmit() {
       this.downloadFileAsync('post', '/v16.3.0/node-v16.3.0-x86.msi', {ids: this.table.selectParams}, '批量下载.zip');
       this.hideDialog();
     }

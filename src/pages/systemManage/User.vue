@@ -8,12 +8,10 @@
       :pagination="pagination"
       :table="table"
       @sortChange="handleSortChange"
-      @selectionChange="handleSelectionChange"
       @expandChange="handleExpandChange"
       @sizeChange="handlePaging"
       @currentChange="handlePaging">
       <template #columnType>
-        <el-table-column type="selection" width="60"></el-table-column>
         <el-table-column type="index" :index="rowIndex" width="60" label="序号" align="center"></el-table-column>
       </template>
       <template #operator>
@@ -54,7 +52,7 @@
       ref="dialogUser"
       :title="`${dialog.user.type === 'edit' ? '编辑' : '新增'}用户`"
       :dialogId="dialog.user.dialogId"
-      @dialogConfirm="submitDialogUser"
+      @dialogConfirm="handleDialogUserSubmit"
       @dialogClose="dialog.user.dialogId = 0">
       <div class="container">
         <el-form :model="formData" :rules="formRules" ref="userForm" label-width="80px">
@@ -110,7 +108,7 @@
       ref="dialogConfirm"
       :title="dialog.confirm.title"
       :dialogId="dialog.confirm.dialogId"
-      @dialogConfirm="submitDialogConfirm"
+      @dialogConfirm="handleDialogConfirmSubmit"
       @dialogClose="dialog.confirm.dialogId = 0">
       <p class="base-dialog-tooltip">{{dialog.confirm.tooltip}}</p>
     </base-dialog>
@@ -223,7 +221,7 @@ export default {
         requestParams: row.id
       });
     },
-    async submitDialogConfirm() {
+    async handleDialogConfirmSubmit() {
       this.$refs.dialogConfirm.loadingOpen();
       const res = await this.$api.systemManage.delUser(this.dialog.requestParams);
       this.$refs.dialogConfirm.loadingClose();
@@ -235,7 +233,7 @@ export default {
         this.$message.error(res.message);
       }
     },
-    submitDialogUser() {
+    handleDialogUserSubmit() {
       this.$refs.userForm.validate(async valid => {
         if (!valid) return;
         this.$refs.dialogUser.loadingOpen();
