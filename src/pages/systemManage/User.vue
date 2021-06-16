@@ -11,10 +11,10 @@
       @expandChange="handleExpandChange"
       @sizeChange="handlePaging"
       @currentChange="handlePaging">
-      <template #columnType>
+      <template #typeColumn>
         <el-table-column type="index" :index="rowIndex" width="60" label="序号" align="center"></el-table-column>
       </template>
-      <template #operator>
+      <template #operationColumn>
         <el-table-column type="expand" width="60">
           <template #header>
             详情
@@ -134,7 +134,7 @@ export default {
       isLoading: true,
       table: {
         defaultSort: {prop: 'created', order: 'descending'},
-        column: [
+        columns: [
           {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150, sortable: true},
           {label: '用户名', prop: 'username', sortable: true},
           {label: '用户类型', prop: 'role', align: 'center'},

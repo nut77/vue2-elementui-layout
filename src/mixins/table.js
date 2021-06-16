@@ -6,7 +6,7 @@ export default {
       table: {
         isLoading: false,
         isSingleExpanded: true,
-        column: [],
+        columns: [],
         data: [],
         defaultSort: {prop: 'createTime', order: 'descending'},
         sortOrders: ['descending', 'ascending'],

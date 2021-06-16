@@ -7,10 +7,10 @@
       @sortChange="handleSortChange"
       @sizeChange="handlePaging"
       @currentChange="handlePaging">
-      <template #columnType>
+      <template #typeColumn>
         <el-table-column type="index" :index="rowIndex" width="60" label="序号" align="center"></el-table-column>
       </template>
-      <template #operator>
+      <template #operationColumn>
         <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
             <el-button type="danger" size="small" @click="handleDialogShowConfirm(row)">删除</el-button>
@@ -40,8 +40,9 @@ export default {
     return {
       isLoading: true,
       table: {
+        settingColumnsProp: [],
         defaultSort: {prop: 'created', order: 'descending'},
-        column: [
+        columns: [
           {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150, sortable: true},
           {label: '客户名', prop: 'username', sortable: true},
           {label: '客户类型', prop: 'role', align: 'center'},

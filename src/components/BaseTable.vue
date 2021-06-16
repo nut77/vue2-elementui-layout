@@ -14,7 +14,7 @@
       </el-dropdown-menu>
     </el-dropdown>
     <!--常规表格-->
-    <template v-if="!!table && !!table.column.length">
+    <template v-if="!!table && !!table.columns.length">
       <el-table
         ref="baseTable"
         class="wfull"
@@ -27,8 +27,8 @@
         @sort-change="({prop, order}) => $emit('sortChange', prop, order)"
         @selection-change="selection => $emit('selectionChange', selection)"
         @expand-change="handleExpandChange">
-        <slot name="columnType"></slot>
-        <template v-for="(item, i) in table.column">
+        <slot name="typeColumn"></slot>
+        <template v-for="(item, i) in table.columns">
           <el-table-column
             :key="`table_${i}`"
             :prop="item.prop"
@@ -43,8 +43,8 @@
             </template>
           </el-table-column>
         </template>
-        <slot name="column"></slot>
-        <slot name="operator"></slot>
+        <slot name="otherColumns"></slot>
+        <slot name="operationColumn"></slot>
       </el-table>
     </template>
     <!--自定义表格-->
@@ -67,7 +67,7 @@
 
 <script>
 /**
- * table.column属性如下：
+ * table.columns属性如下：
  * label: 表格列标签label
  * prop: 列属性prop
  * align: 列对齐方式，默认left
