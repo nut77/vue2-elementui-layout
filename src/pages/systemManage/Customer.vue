@@ -14,7 +14,7 @@
       <template #operationColumn>
         <el-table-column label="操作" :min-width="100" align="center">
           <template #default="{row}">
-            <el-button type="danger" size="small" @click="handleDialogShowConfirm(row)">删除</el-button>
+            <el-button type="primary" size="small" @click="handleDialogShowConfirm(row)">编辑</el-button>
           </template>
         </el-table-column>
       </template>
@@ -23,11 +23,21 @@
     <!--弹框-->
     <base-dialog
       ref="dialogConfirm"
-      title="确认删除"
+      title="编辑客户"
       :dialogId="dialog.confirm.dialogId"
       @dialogConfirm="handleDialogConfirmSubmit"
       @dialogClose="dialog.confirm.dialogId = 0">
-      <p class="base-dialog-tooltip">确认删除该客户？</p>
+      <el-form :model="dialog.confirm.params" label-width="80px">
+        <el-form-item prop="isVip" label="优质客户">
+          <el-radio-group v-model="dialog.confirm.params.isVip">
+            <el-radio label="是">是</el-radio>
+            <el-radio label="否">否</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item prop="description" label="客户描述">
+          <el-input type="textarea" maxlength="250" v-model.trim="dialog.confirm.params.description"/>
+        </el-form-item>
+      </el-form>
     </base-dialog>
   </div>
 </template>
@@ -52,7 +62,7 @@ export default {
         defaultSort: {prop: 'lastOrder', order: 'descending'},
         columns: [
           {label: '最近下单时间', prop: 'lastOrder', sortable: true, filter: 'formatDate', arguments: [], width: 150},
-          {label: '客户名', prop: 'username', width: 120},
+          {label: '客户名', prop: 'username', width: 120, click: (row) => alert(JSON.stringify(row))},
           {label: '订单总数', prop: 'orderTotal', align: 'center', filter: 'numberWithCommas'},
           {label: '未完成订单', prop: 'orderFinished', align: 'center', filter: 'numberWithCommas'},
           {label: '已完成订单', prop: 'orderUnfinished', align: 'center', filter: 'numberWithCommas'},
@@ -67,7 +77,11 @@ export default {
       dialog: {
         confirm: {
           dialogId: 0,
-          requestParams: []
+          params: {
+            id: '',
+            isVip: '',
+            description: ''
+          }
         }
       }
     };
@@ -77,18 +91,16 @@ export default {
       this.setTableData('systemManage', 'getCustomer', this.getTableRequestParams());
     },
     handleDialogShowConfirm(row) {
-      Object.assign(this.dialog.confirm, {
-        dialogId: Date.now(),
-        requestParams: row.id
-      });
+      this.dialog.confirm.dialogId = Date.now();
+      this.$tool.setObject(this.dialog.confirm.params, row);
     },
     async handleDialogConfirmSubmit() {
       this.$refs.dialogConfirm.loadingOpen();
-      const res = await this.$api.systemManage.delCustomer(this.dialog.requestParams);
+      const res = await this.$api.systemManage.editCustomer(this.dialog.confirm.params);
       this.$refs.dialogConfirm.loadingClose();
       if (!!res && res.status === 200) {
         this.dialog.confirm.dialogId = 0;
-        this.$message.success('删除客户成功');
+        this.$message.success('编辑客户成功');
         this.refreshTableData();
       } else {
         this.$message.error(res.message);

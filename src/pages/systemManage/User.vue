@@ -54,53 +54,51 @@
       :dialogId="dialog.user.dialogId"
       @dialogConfirm="handleDialogUserSubmit"
       @dialogClose="dialog.user.dialogId = 0">
-      <div class="container">
-        <el-form :model="formData" :rules="formRules" ref="userForm" label-width="80px">
-          <el-form-item label="用户名" prop="username">
-            <el-input
-              maxlength=20
-              placeholder="请输入用户名"
-              v-model.trim="formData.username"
-              clearable
-              :disabled="dialog.user.type === 'edit'"
-              onpaste="return false">
-            </el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="password" :required="isPasswordRequired">
-            <el-input
-              v-if="dialog.user.type === 'add' || isResetPassword"
-              maxlength=20
-              type="password"
-              placeholder="请输入密码"
-              v-model.trim="formData.password"
-              clearable
-              onpaste="return false">
-            </el-input>
-            <el-button v-else @click="isResetPassword = true">重置</el-button>
-          </el-form-item>
-          <el-form-item v-if="dialog.user.type === 'add' || isResetPassword" label="确认密码" prop="repeatPassword">
-            <el-input
-              maxlength=20
-              type="password"
-              placeholder="请再次输入密码"
-              v-model.trim="formData.repeatPassword"
-              clearable
-              onpaste="return false">
-            </el-input>
-          </el-form-item>
-          <el-form-item label="用户类型">
-            <el-tag>普通用户</el-tag>
-          </el-form-item>
-          <el-form-item label="描述" prop="origin">
-            <el-input
-              type="textarea"
-              maxlength=250
-              placeholder="请输入描述"
-              v-model.trim="formData.description">
-            </el-input>
-          </el-form-item>
-        </el-form>
-      </div>
+      <el-form :model="formData" :rules="formRules" ref="userForm" label-width="80px">
+        <el-form-item label="用户名" prop="username">
+          <el-input
+            maxlength=20
+            placeholder="请输入用户名"
+            v-model.trim="formData.username"
+            clearable
+            :disabled="dialog.user.type === 'edit'"
+            onpaste="return false">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password" :required="isPasswordRequired">
+          <el-input
+            v-if="dialog.user.type === 'add' || isResetPassword"
+            maxlength=20
+            type="password"
+            placeholder="请输入密码"
+            v-model.trim="formData.password"
+            clearable
+            onpaste="return false">
+          </el-input>
+          <el-button v-else @click="isResetPassword = true">重置</el-button>
+        </el-form-item>
+        <el-form-item v-if="dialog.user.type === 'add' || isResetPassword" label="确认密码" prop="repeatPassword">
+          <el-input
+            maxlength=20
+            type="password"
+            placeholder="请再次输入密码"
+            v-model.trim="formData.repeatPassword"
+            clearable
+            onpaste="return false">
+          </el-input>
+        </el-form-item>
+        <el-form-item label="用户类型">
+          <el-tag>普通用户</el-tag>
+        </el-form-item>
+        <el-form-item label="描述" prop="origin">
+          <el-input
+            type="textarea"
+            maxlength=250
+            placeholder="请输入描述"
+            v-model.trim="formData.description">
+          </el-input>
+        </el-form-item>
+      </el-form>
     </base-dialog>
 
     <!--弹框-->
@@ -152,7 +150,7 @@ export default {
           dialogId: 0,
           title: '',
           tooltip: '',
-          requestParams: []
+          params: []
         }
       },
       userFormDefault,
@@ -218,12 +216,12 @@ export default {
         dialogId: Date.now(),
         title: '确认删除',
         tooltip: '确认删除该用户？',
-        requestParams: row.id
+        params: row.id
       });
     },
     async handleDialogConfirmSubmit() {
       this.$refs.dialogConfirm.loadingOpen();
-      const res = await this.$api.systemManage.delUser(this.dialog.requestParams);
+      const res = await this.$api.systemManage.delUser(this.dialog.params);
       this.$refs.dialogConfirm.loadingClose();
       if (!!res && res.status === 200) {
         this.dialog.confirm.dialogId = 0;

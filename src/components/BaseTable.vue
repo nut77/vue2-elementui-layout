@@ -40,10 +40,14 @@
             :min-width="item.width || 120"
             :show-overflow-tooltip="true"
             :align="item.align || 'left'"
+            :class-name="item.className || ''"
             :sort-orders="table.sortOrders"
             :sortable="item.sortable ? 'custom' : false">
             <template #default="{row}">
-              <span class="table-value" v-html="$options.filters[item.filter || 'transformNull'](row[item.prop], ...item.arguments)"/>
+              <span
+                class="table-cell-content"
+                @click="item.click && item.click(row)"
+                v-html="$options.filters[item.filter || 'transformNull'](row[item.prop], ...item.arguments)"/>
             </template>
           </el-table-column>
         </template>
@@ -75,9 +79,12 @@
  * label: 表格列标签label
  * prop: 列属性prop
  * align: 列对齐方式，默认left
+ * className: 列样式class
+ * sortable: 列是否可排序（后端排序）
  * filter: 过滤器名称：默认transformNull
  * arguments: 数组-过滤器参数
  * width: 列最小宽度，默认120
+ * click: 列内容的点击事件（其它鼠标事件类推）
  */
 export default {
   name: 'BaseTable',
