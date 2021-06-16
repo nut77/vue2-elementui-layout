@@ -1,7 +1,7 @@
 <template>
   <div class="wfull table-container" ref="baseTableContainer" v-loading="table.isLoading">
     <!--表格动态列设置-->
-    <el-dropdown trigger="click" class="table-setting">
+    <el-dropdown trigger="click" class="table-setting" v-if="table.configurableColumns.length">
       <span class="el-dropdown-link" title="设置显示列">
         <i class="el-icon-setting"></i>
       </span>
