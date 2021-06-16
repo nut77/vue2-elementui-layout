@@ -6,10 +6,13 @@
         <i class="el-icon-setting"></i>
       </span>
       <el-dropdown-menu class="table-setting-box" #default>
-        <el-checkbox-group v-model="checkList" @change="test">
-          <el-checkbox label="复选框 A"></el-checkbox>
-          <el-checkbox label="复选框 B"></el-checkbox>
-          <el-checkbox label="复选框 C"></el-checkbox>
+        <el-checkbox-group  v-model="configurableVisibleColumns" @change="props => $emit('setVisibleColumns', props)">
+          <el-checkbox
+           v-for="item of table.configurableColumns"
+           :key="item.prop"
+           :label="item.prop">
+           {{item.label}}
+           </el-checkbox>
         </el-checkbox-group>
       </el-dropdown-menu>
     </el-dropdown>
@@ -30,6 +33,7 @@
         <slot name="typeColumn"></slot>
         <template v-for="(item, i) in table.columns">
           <el-table-column
+            v-if="getColumnVisible(item.prop)"
             :key="`table_${i}`"
             :prop="item.prop"
             :label="item.label"
@@ -93,12 +97,13 @@ export default {
   },
   data() {
     return {
-      checkList: []
+      configurableVisibleColumns: this.table.configurableVisibleColumns
     };
   },
   methods: {
-    test(args) {
-      debugger;
+    getColumnVisible(prop) {
+      if (!this.table.configurableColumns.find(item => item.prop === prop)) return true;
+      return this.table.configurableVisibleColumns.includes(prop);
     },
     handleExpandChange(row, expandedRows) {
       const isExpanded = expandedRows.length > 0;

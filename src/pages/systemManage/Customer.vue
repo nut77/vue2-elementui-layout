@@ -6,7 +6,8 @@
       :table="table"
       @sortChange="handleSortChange"
       @sizeChange="handlePaging"
-      @currentChange="handlePaging">
+      @currentChange="handlePaging"
+      @setVisibleColumns="handleVisibleColumnsChange">
       <template #typeColumn>
         <el-table-column type="index" :index="rowIndex" width="60" label="序号" align="center"></el-table-column>
       </template>
@@ -40,14 +41,27 @@ export default {
     return {
       isLoading: true,
       table: {
-        settingColumnsProp: [],
-        defaultSort: {prop: 'created', order: 'descending'},
+        configurableColumns: [
+          {label: '订单总数', prop: 'orderTotal'},
+          {label: '采购类型', prop: 'purchaseType'},
+          {label: '投诉次数', prop: 'unsatisfiedTotal'},
+          {label: '好评次数', prop: 'satisfiedTotal'},
+          {label: '客户描述', prop: 'description'}
+        ],
+        configurableVisibleColumns: ['orderTotal'],
+        defaultSort: {prop: 'lastOrder', order: 'descending'},
         columns: [
-          {label: '创建时间', prop: 'created', filter: 'formatDate', arguments: [], width: 150, sortable: true},
-          {label: '客户名', prop: 'username', sortable: true},
-          {label: '客户类型', prop: 'role', align: 'center'},
-          {label: '描述', prop: 'description'},
-          {label: '最近登录时间', prop: 'lastLogin', filter: 'formatDate', arguments: [], width: 150}
+          {label: '最近下单时间', prop: 'lastOrder', sortable: true, filter: 'formatDate', arguments: [], width: 150},
+          {label: '客户名', prop: 'username', width: 120},
+          {label: '订单总数', prop: 'orderTotal', align: 'center', filter: 'numberWithCommas'},
+          {label: '未完成订单', prop: 'orderFinished', align: 'center', filter: 'numberWithCommas'},
+          {label: '已完成订单', prop: 'orderUnfinished', align: 'center', filter: 'numberWithCommas'},
+          {label: '采购类型', prop: 'purchaseType', align: 'center', filter: 'transformArrayToString'},
+          {label: '采购数量', prop: 'purchaseTotal', align: 'center', filter: 'numberWithCommas'},
+          {label: '优选客户', prop: 'isVip', sortable: true, align: 'center', width: 120},
+          {label: '投诉次数', prop: 'unsatisfiedTotal', align: 'center', filter: 'numberWithCommas', width: 120},
+          {label: '好评次数', prop: 'satisfiedTotal', align: 'center', filter: 'numberWithCommas', width: 120},
+          {label: '客户描述', prop: 'description'}
         ]
       },
       dialog: {

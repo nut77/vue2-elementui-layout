@@ -16,7 +16,9 @@ export default {
         selectParamProp: 'id',
         selectParams: [],
         rowKeyProps: ['id'],
-        expandRowKeys: []
+        expandRowKeys: [],
+        configurableColumns: [],
+        configurableVisibleColumns: []
       },
       pagination: {
         size: 30,
@@ -29,6 +31,10 @@ export default {
     };
   },
   methods: {
+    // 设置表格动态列可见
+    handleVisibleColumnsChange(props) {
+      this.table.configurableVisibleColumns = props;
+    },
     // 拿取表格数据后回到顶部
     scrollToTop() {
       document.querySelector('.table-container .el-table__body-wrapper').scrollTo(0, 0);
