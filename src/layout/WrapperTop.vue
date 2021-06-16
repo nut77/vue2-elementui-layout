@@ -168,6 +168,9 @@ export default {
       background-color: rgba(65, 178, 255, 0.8) !important;
     }
   }
+  /deep/ .el-submenu.is-opened .el-submenu__title {
+    background-color: rgba(65, 178, 255, 0.8) !important;
+  }
   /deep/ .el-menu-item.is-active,
   /deep/ .el-submenu.is-active .el-submenu__title {
     background-color: @color-primary !important;
