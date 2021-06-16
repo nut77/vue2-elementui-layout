@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  name: 'timeRange',
+  name: 'BaseTimeRange',
   props: ['type', 'format'],
   data() {
     return {
@@ -94,7 +94,6 @@ export default {
         if (elem.classList && Array.from(elem.classList).includes('dropdownWrap')) return false;
         elem = elem.parentNode;
       }
-
       this.item.isOpen = false;
     }
   },
