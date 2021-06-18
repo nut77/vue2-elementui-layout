@@ -4,7 +4,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   // 打包 如果history是hash publicPath需要设置为相对路径 /pro
-  publicPath: isProdEnv ? './' : '/',
+  publicPath: isProdEnv ? '/' : '/',
   lintOnSave: !isProdEnv,
   pages: {
     index: {
