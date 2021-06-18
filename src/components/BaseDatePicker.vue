@@ -1,5 +1,5 @@
 <template>
-    <div class="box" :class="isSingleRowDispaly ? '' : 'flexdc'">
+    <div class="box" :class="boxClass">
       <div class="base-date-picker">
         <i v-if="!isSingleRowDispaly" class="box-icon--start"></i>
         <el-date-picker
@@ -15,7 +15,7 @@
         </el-date-picker>
       </div>
       <span v-if="isSingleRowDispaly && isRange" class="box-divider">-</span>
-      <div class="base-date-picker"  v-if="isRange">
+      <div class="base-date-picker" v-if="isRange">
         <i v-if="!isSingleRowDispaly" class="box-icon--end"></i>
         <el-date-picker
           v-model="end"
@@ -36,117 +36,167 @@
 export default {
   name: 'BaseDatePicker',
   props: {
+    // 类型 date datetime
     type: {
       type: String,
-      // date
       default: 'datetime'
     },
-    format: {
-      type: String,
-      default: 'yyyy-MM-dd HH:mm:ss'
-    },
+    // 是否需要选择范围
     isRange: {
       type: Boolean,
-      default: true
+      default: false
     },
     // 初始化的时间的值，如果是范围 就传入一个数组
     value: {
       type: [String, Array, Number],
       default: ''
     },
+    // 日期选择器返回值类型：string integer arrayString arrayInteger
+    datePickerValueType: {
+      type: String,
+      default: 'string'
+    },
     // 是否单行展示，针对时间范围选择
     isSingleRowDispaly: {
       type: Boolean,
       default: true
+    },
+    // 是否是可折叠下拉框
+    isDropdown: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
     return {
-      range: '',
+      timeRange: [' 00:00:00', ' 23:59:59'],
       start: '',
-      end: ''
+      end: '',
+      timestamp: {
+        start: 0,
+        startDate: 0,
+        end: 0,
+        endDate: 0
+      }
     };
   },
   computed: {
     isDateType() {
       return this.type === 'date';
     },
-    // 日期范围才需要
-    dateInitTimeRange() {
-      return this.isDateType ? [' 00:00:00', ' 23:59:59'] : ['', ''];
+    boxClass() {
+      return {
+        flexdc: !this.isSingleRowDispaly,
+        date: this.isDateType,
+        dropdown: this.isDropdown
+      };
     },
-    startTimestamp() {
-      const start = this.start && this.isDateType ? (this.start + this.dateInitTimeRange[0]) : this.start;
-      return new Date(start).getTime() || '';
+    format() {
+      return this.isDateType ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss';
     },
-    startDateTimestamp() {
-      const startDate = this.start.replace(/(?<=\s)\S*/g, '').trim();
-      return new Date(startDate && (startDate + ' 00:00:00')).getTime() || '';
-    },
-    endTimestamp() {
-      const end = this.end && this.isDateType ? (this.end + this.dateInitTimeRange[0]) : this.end;
-      return new Date(end).getTime() || '';
-    },
-    endDateTimestamp() {
-      const endDate = this.end.replace(/(?<=\s)\S*/g, '').trim();
-      return new Date(endDate && (endDate + ' 00:00:00')).getTime() || '';
+    formatDateType() {
+      return this.isDateType ? 'YYYY-MM-DD' : 'YYYY-MM-DD hh:mm:ss';
     }
   },
   methods: {
-    getRange() {
-      const timeInit = this.isDateType ? [' 00:00:00', ' 23:59:59'] : ['', ''];
-      return [
-        this.start ? new Date(this.start + timeInit[0]).getTime() : '',
-        this.end ? new Date(this.end + timeInit[1]).getTime() : ''
-      ];
+    // 根据时间选择器标识，获得初始化的时间戳。结束日期时间戳要么是当前时间要么是当天最晚的时间
+    getInitTimestamp(flag = 'start') {
+      if (flag === 'start') {
+        return {
+          dateTime: new Date('2020-01-01 00:00:00').getTime(),
+          date: 0
+        };
+      }
+      const dateNow = Date.now();
+      return {
+        dateTime: dateNow,
+        date: new Date(this.$tool.formatDate(dateNow, 'YYYY-MM-DD')).getTime()
+      };
+    },
+    // 根据时间选择器标识，设置该时间选择器的时间戳
+    setTimestamp(flag = 'start') {
+      const dateStr = this[flag];
+      const timestamp = dateStr ? this.getTimestamp(flag) : this.getInitTimestamp(flag);
+      this.timestamp[flag] = timestamp.dateTime;
+      this.timestamp[flag + 'Date'] = timestamp.date;
+    },
+    // 根据时间选择器标识，获得该时间选择器的时间戳
+    getTimestamp(flag = 'start') {
+      const dateStr = this[flag];
+      return {
+        dateTime: new Date(this.isDateType ? dateStr + this.timeRange[flag === 'end' ? 0 : 1] : dateStr).getTime(),
+        date: new Date(dateStr.replace(/(?<=\s)\S*/g, '').trim() + this.timeRange[0]).getTime()
+      };
+    },
+    // 拿到时间选择器的值，type表示值类型：string integer arrayString arrayInteger
+    getDatePickerValue(type = this.datePickerValueType) {
+      if (!this.isRange) {
+        const timestamp = this.isDateType ? this.timestamp.startDate : this.timestamp.start;
+        return type === 'string' ? this.start : this.start && timestamp;
+      }
+      // 范围
+      if (type === 'string') return this.start + (this.start && this.end && '/') + this.end;
+      const timestampRange = this.isDateType ? [this.timestamp.startDate, this.timestamp.endDate] : [this.timestamp.start, this.timestamp.end];
+      return type === 'arrayInteger' ? timestampRange : [this.start, this.end];
     },
     getStartPickerOptions() {
-      const timeInit = this.isDateType ? [' 00:00:00', ' 23:59:59'] : ['', ''];
       return {
         disabledDate: time => {
-          const endTimeStr = this.end;
-          return endTimeStr ? time.getTime() > new Date(endTimeStr + timeInit[1]).getTime() : time.getTime() > Date.now();
+          const timestamp = time.getTime();
+          return timestamp > Date.now() || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
         }
       };
     },
     getEndPickerOptions() {
-      // 如果开始时间不为空，则结束时间大于开始时间且小于当前时间;开始时间为空，结束时间最大值小于等于当天
       return {
         disabledDate: time => {
           const timestamp = time.getTime();
-          const dateNow = Date.now();
-          if (this.startDateTimestamp) {
-            return timestamp < this.startDateTimestamp || timestamp > dateNow;
-          }
-          if (this.startDateTimestamp === timestamp) console.log(123);
-          return timestamp > dateNow;
+          return timestamp > Date.now() || timestamp < this.timestamp.startDate;
         }
       };
     },
     handleDateChange() {
       this.start = this.start || '';
       this.end = this.end || '';
-      this.range = this.start + (this.start && this.end && '/') + this.end;
-      this.$emit('change');
+      // 日期时间选择器 时间范围限制
+      if (!this.isDateType) {
+        const dateNow = Date.now();
+        const dateNowFormat = this.$tool.formatDate(dateNow, this.formatDateType);
+        if (this.timestamp.start > dateNow) this.start = dateNowFormat;
+        if (this.timestamp.end > dateNow) this.end = dateNowFormat;
+        if (this.end && (this.timestamp.start > this.timestamp.end)) this.start = this.$tool.formatDate(this.timestamp.end, this.formatDateType);
+      }
+      this.$emit('change', this.getDatePickerValue(this.valueType));
+
+      console.log(this.getDatePickerValue('arrayInteger'));
     },
     clearDate() {
-      this.range = '';
       this.start = '';
       this.end = '';
     },
     handleClick(event) {
       let elem = event.target || event.srcElement;
       while (elem) {
-        if (elem.classList && Array.from(elem.classList).includes('dropdownWrap')) return false;
+        if (elem.classList && Array.from(elem.classList).includes('dropdown')) return false;
         elem = elem.parentNode;
       }
     }
   },
+  watch: {
+    start() {
+      this.setTimestamp('start');
+    },
+    end() {
+      this.setTimestamp('end');
+    }
+  },
   mounted() {
-    document.addEventListener('click', this.handleClick);
+    this.setTimestamp('start');
+    this.setTimestamp('end');
+    this.isDropdown && document.addEventListener('click', this.handleClick);
   },
   destroyed() {
-    document.removeEventListener('click', this.handleClick);
+    this.isDropdown && document.removeEventListener('click', this.handleClick);
   }
 };
 </script>
@@ -158,6 +208,11 @@ export default {
       flex-direction: column;
       .base-date-picker + .base-date-picker {
         .mgt10;
+      }
+    }
+    &.date {
+      .base-date-picker .el-input {
+        width: 150px;
       }
     }
   }
