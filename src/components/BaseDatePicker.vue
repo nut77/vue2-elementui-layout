@@ -65,6 +65,11 @@ export default {
     isDropdown: {
       type: Boolean,
       default: false
+    },
+    // 可选的最小日期
+    minDate: {
+      type: String,
+      default: '2020-01-01'
     }
   },
   data() {
@@ -96,6 +101,9 @@ export default {
     },
     formatDateType() {
       return this.isDateType ? 'YYYY-MM-DD' : 'YYYY-MM-DD hh:mm:ss';
+    },
+    minTimestamp() {
+      return new Date(this.minDate + this.timeRange[0]).getTime();
     }
   },
   methods: {
@@ -103,8 +111,8 @@ export default {
     getInitTimestamp(flag = 'start') {
       if (flag === 'start') {
         return {
-          dateTime: new Date('2020-01-01 00:00:00').getTime(),
-          date: 0
+          dateTime: this.minTimestamp,
+          date: this.minTimestamp
         };
       }
       const dateNow = Date.now();
@@ -143,7 +151,7 @@ export default {
       return {
         disabledDate: time => {
           const timestamp = new Date(this.$tool.formatDate(time, 'YYYY-MM-DD') + this.timeRange[0]).getTime();
-          return timestamp > Date.now() || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
+          return timestamp < this.minTimestamp || timestamp > Date.now() || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
         }
       };
     },
@@ -151,7 +159,7 @@ export default {
       return {
         disabledDate: time => {
           const timestamp = time.getTime();
-          return timestamp > Date.now() || timestamp < this.timestamp.startDate;
+          return timestamp < this.minTimestamp || timestamp > Date.now() || timestamp < this.timestamp.startDate;
         }
       };
     },
