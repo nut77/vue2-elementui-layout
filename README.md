@@ -1,6 +1,6 @@
 # vue2-elementui-layout 
 > 本项目旨在快速开发后台管理系统，提供此类项目前端架构和部分常用功能组件的使用示例。
-> 项目主要基于：vue2、elementui、axios、less开发
+> 项目主要基于：vue2、elementui、axios、less、vuex、vue-router开发
 ## 1、项目主要功能
 - 简洁的界面主题；
 - eslint配置；
@@ -8,7 +8,7 @@
 - 异步请求相关方法整合，接口文件整合；
 - 路由的快速配置（含权限配置）；
 - 根据路由配置，系统导航的配置（默认顶部+左侧导航，可选顶部导航或左侧导航）；
-- 常用公共组件的提供：BaseDialog、BaseTable、BaseText、BaseTimeRange；
+- 常用公共组件的提供：BaseDialog、BaseTable、BaseText、BaseDatePicker；
 - 组件常用方法和数据提供：mixins；
 - 表单自定义验证规则；
 - 系统名、版本号、代理的统一配置；
@@ -77,6 +77,8 @@
 ![表格下载](./screenshots/08.png)
 ### 3.4 弹框
 ![弹框](./screenshots/07.png)
+### 3.5 日期时间选择器
+![弹框](./screenshots/09.png)
 ## 4、写在最后
 如果启动不了或者某些地方报错请自己试着找问题，慢慢的就容易了。
 大家在使用过程中，如果发现有需要改进和优化的地方，请在下方留言呀。
