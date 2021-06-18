@@ -1,9 +1,10 @@
 const path = require('path');
 const isProdEnv = process.env.NODE_ENV === 'production';
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-  // 打包 如果history是hash publicPath需要设置为相对路径
-  publicPath: isProdEnv ? '/pro' : '/',
+  // 打包 如果history是hash publicPath需要设置为相对路径 /pro
+  publicPath: isProdEnv ? './' : '/',
   lintOnSave: !isProdEnv,
   pages: {
     index: {
@@ -51,6 +52,21 @@ module.exports = {
         '@c': path.resolve(__dirname, './src/components'),
         '@l': path.resolve(__dirname, './src/layout')
       }
+    },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+          terserOptions: {
+            compress: {
+              warnings: false,
+              drop_console: true,
+              drop_debugger: true,
+              pure_funcs: ['console.log']
+            }
+          }
+        })
+      ]
     }
   },
   productionSourceMap: false
