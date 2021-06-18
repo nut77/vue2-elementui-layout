@@ -71,7 +71,7 @@ const formatByteSize = (byteSize) => {
  * new Date().format("yyyy-MM-dd hh:mm:ss")
  */
 // eslint-disable-next-line no-extend-native
-Date.prototype.format = (fmt, hasWeek = false) => {
+Date.prototype.format = function (fmt, hasWeek = false) {
   const weekday = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
   const o = {
     'M+': this.getMonth() + 1,

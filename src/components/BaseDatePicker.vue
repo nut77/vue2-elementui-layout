@@ -70,6 +70,11 @@ export default {
     minDate: {
       type: String,
       default: '2020-01-01'
+    },
+    // 可选的最大日期
+    maxDate: {
+      type: String,
+      default: new Date().format('yyyy-MM-dd')
     }
   },
   data() {
@@ -104,6 +109,9 @@ export default {
     },
     minTimestamp() {
       return new Date(this.minDate + this.timeRange[0]).getTime();
+    },
+    maxTimestamp() {
+      return new Date(this.maxDate + this.timeRange[1]).getTime();
     }
   },
   methods: {
@@ -115,10 +123,9 @@ export default {
           date: this.minTimestamp
         };
       }
-      const dateNow = Date.now();
       return {
-        dateTime: dateNow,
-        date: new Date(this.$tool.formatDate(dateNow, 'YYYY-MM-DD')).getTime()
+        dateTime: this.maxTimestamp,
+        date: new Date(this.$tool.formatDate(this.maxTimestamp, 'YYYY-MM-DD')).getTime()
       };
     },
     // 根据时间选择器标识，设置该时间选择器的时间戳
@@ -151,7 +158,7 @@ export default {
       return {
         disabledDate: time => {
           const timestamp = new Date(this.$tool.formatDate(time, 'YYYY-MM-DD') + this.timeRange[0]).getTime();
-          return timestamp < this.minTimestamp || timestamp > Date.now() || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
+          return timestamp < this.minTimestamp || timestamp > this.maxTimestamp || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
         }
       };
     },
@@ -159,7 +166,7 @@ export default {
       return {
         disabledDate: time => {
           const timestamp = time.getTime();
-          return timestamp < this.minTimestamp || timestamp > Date.now() || timestamp < this.timestamp.startDate;
+          return timestamp < this.minTimestamp || timestamp > this.maxTimestamp || timestamp < this.timestamp.startDate;
         }
       };
     },
