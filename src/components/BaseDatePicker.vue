@@ -142,7 +142,7 @@ export default {
     getStartPickerOptions() {
       return {
         disabledDate: time => {
-          const timestamp = time.getTime();
+          const timestamp = new Date(this.$tool.formatDate(time, 'YYYY-MM-DD') + this.timeRange[0]).getTime();
           return timestamp > Date.now() || (this.timestamp.endDate && timestamp > this.timestamp.endDate);
         }
       };
