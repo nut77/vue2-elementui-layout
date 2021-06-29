@@ -102,7 +102,7 @@ export default {
       const agent = navigator.userAgent.match(reg);
       return agent ? parseInt(agent[0].split('/')[1].split('.')[0]) : 0;
     },
-    // 浏览器版本过低提示
+    // 检查浏览器版本
     checkVersion() {
       const [MIN_VERSION_CHROME, MIN_VERSION_FIREFOX] = [60, 60];
       const chromeVersion = this.getVersion('chrome');
