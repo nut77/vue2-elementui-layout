@@ -1,12 +1,12 @@
 <template>
   <el-dialog
-    :center="true"
+    center
+    append-to-body
     :loading="isLoading"
     :width="width"
     :visible.sync="visible"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    :append-to-body="true"
     @closed="$emit('dialogClose')"
     custom-class="base-dialog-container">
     <template #title>
@@ -29,9 +29,7 @@ export default {
   props: {
     width: {
       type: String,
-      default: () => {
-        return document.body.clientWidth <= 1440 ? '40%' : '30%';
-      }
+      default: () => (document.body.clientWidth <= 1440 ? '40%' : '30%')
     },
     title: {
       type: String,
